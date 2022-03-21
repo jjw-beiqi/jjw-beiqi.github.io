@@ -555,180 +555,6 @@
       </tags>
   </entry>
   <entry>
-    <title>singleton</title>
-    <url>/2022/03/21/singleton/</url>
-    <content><![CDATA[<h1 id="单例模式"><a href="#单例模式" class="headerlink" title="单例模式"></a>单例模式</h1><blockquote>
-<p>单例模式（Singleton Pattern）是 Java 中最简单的设计模式之一。这种类型的设计模式属于创建型模式，它提供了一种创建对象的最佳方式。</p>
-<p>这种模式涉及到一个单一的类，该类负责创建自己的对象，同时确保只有单个对象被创建。这个类提供了一种访问其唯一的对象的方式，可以直接访问，不需要实例化该类的对象。</p>
-</blockquote>
-<p><strong>注意：</strong></p>
-<ul>
-<li>1、单例类只能有一个实例。</li>
-<li>2、单例类必须自己创建自己的唯一实例。</li>
-<li>3、单例类必须给所有其他对象提供这一实例。</li>
-</ul>
-<br>
-
-<p><strong>优点：</strong></p>
-<ul>
-<li>1、在内存里只有一个实例，减少了内存的开销，尤其是频繁的创建和销毁实例（比如管理学院首页页面缓存）。</li>
-<li>2、避免对资源的多重占用（比如写文件操作）。</li>
-</ul>
-<br>
-
-<p><strong>缺点：</strong></p>
-<p>没有接口，不能继承，与单一职责原则冲突，一个类应该只关心内部逻辑，而不关心外面怎么样来实例化。</p>
-<br>
-
-<p><strong>使用场景：</strong></p>
-<ul>
-<li>1、要求生产唯一序列号。</li>
-<li>2、WEB 中的计数器，不用每次刷新都在数据库里加一次，用单例先缓存起来。</li>
-<li>3、创建的一个对象需要消耗的资源过多，比如 I&#x2F;O 与数据库的连接等。</li>
-</ul>
-<br>
-
-<hr>
-<h1 id="单例模式的几种实现方式"><a href="#单例模式的几种实现方式" class="headerlink" title="单例模式的几种实现方式"></a>单例模式的几种实现方式</h1><br>
-
-<h2 id="饿汉模式"><a href="#饿汉模式" class="headerlink" title="饿汉模式"></a>饿汉模式</h2><blockquote>
-<p>描述：基于 classloader 机制避免了多线程的同步问题，不过，instance 在类装载时就实例化，虽然导致类装载的原因有很多种，在单例模式中大多数都是调用 getInstance 方法， 但是也不能确定有其他的方式（或者其他的静态方法）导致类装载，这时候初始化 instance 显然没有达到 lazy loading 的效果。</p>
-</blockquote>
-<p>如果后续并没有使用到，可能会造成浪费空间</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Hungry</span> &#123;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">private</span> <span class="title function_">Hungry</span><span class="params">()</span>&#123;&#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> <span class="keyword">static</span> <span class="type">Hungry</span> <span class="variable">HUNGRY</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Hungry</span>();</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> Hungry <span class="title function_">getInstance</span><span class="params">()</span>&#123;</span><br><span class="line">        <span class="keyword">return</span> HUNGRY;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<br>
-
-<hr>
-<br>
-
-<h2 id="懒汉模式"><a href="#懒汉模式" class="headerlink" title="懒汉模式"></a>懒汉模式</h2><p>当使用到的时候才去加载这个类，避免了空间的浪费</p>
-<p>这种方式是最基本的实现方式，这种实现最大的问题就是不支持多线程。因为没有加锁 synchronized，所以严格意义上它并不算单例模式。</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Lazy</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="title function_">Lazy</span><span class="params">()</span>&#123;&#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> Lazy lazy;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> Lazy <span class="title function_">getInstance</span><span class="params">()</span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (lazy == <span class="literal">null</span>)&#123;</span><br><span class="line">            lazy = <span class="keyword">new</span> <span class="title class_">Lazy</span>();</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> lazy;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<br>
-
-<p>上述实现存在一个明显的问题，就是在多线程的情况下不能保证只返回了一个实例，因为getInstance()方法没有加同步锁，可能会造成线程安全的问题</p>
-<p>因此我们需要在getInstance()方法上加上同步锁</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Lazy</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="title function_">Lazy</span><span class="params">()</span>&#123;&#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> Lazy lazy;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">synchronized</span> Lazy <span class="title function_">getInstance</span><span class="params">()</span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (lazy == <span class="literal">null</span>)&#123;</span><br><span class="line">            lazy = <span class="keyword">new</span> <span class="title class_">Lazy</span>();</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> lazy;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<br>
-
-<p>在给getInstance()方法加上同步锁之后，这个方法变成线程安全的了，也不会有产生多个实例的情况了。</p>
-<p>但是这样做的话我们发现每一次判断lazy实例是否存在的时候就要去拿到同步锁，而判断与线程安全是无关的，因此在方法上加同步锁会大大降低性能。因此我们采取<strong>双重锁校验模式</strong>，将同步代码块放在方法中，每次先判断实例是否存在，如果存在就直接返回实例；不存在再去拿同步锁进行初始化，这样可以减少线程上下文的切换，提升性能</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Lazy</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="title function_">Lazy</span><span class="params">()</span>&#123;&#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> Lazy lazy;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> Lazy <span class="title function_">getInstance</span><span class="params">()</span>&#123;</span><br><span class="line">            <span class="keyword">if</span> (lazy == <span class="literal">null</span>) &#123;  </span><br><span class="line">            <span class="keyword">synchronized</span> (Lazy.class) &#123;  </span><br><span class="line">                <span class="keyword">if</span> (lazy == <span class="literal">null</span>) &#123;  </span><br><span class="line">                    lazy = <span class="keyword">new</span> <span class="title class_">Lazy</span>();  </span><br><span class="line">                &#125;  </span><br><span class="line">            &#125;  </span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> lazy;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<br>
-
-<p>上述实现代码，似乎很完美的解决了线程安全问题和性能的问题，但它仍然是线程不安全的。<strong>因为初始化代码的new关键字并不是原子性操作</strong></p>
-<blockquote>
-<p>new的操作步骤：</p>
-<ul>
-<li>分配内存空间</li>
-<li>执行构造方法，初始化对象</li>
-<li>把这个对象指向这个空间</li>
-</ul>
-<p>由于不是原子性操作，可能会造成指令重排的问题，例如先将这个对象指向这个空间，再去初始化对象</p>
-</blockquote>
-<p>情况：一个线程A执行代码，在new操作时发生了指令重排，导致先将对象指向分配的空间，再去初始化对象；这时线程B进入发现这个对象已经指向了一个空间，<strong>它就会认为这个对象!&#x3D;null</strong>，但实际上这个对象可能还未完成初始化对象</p>
-<p>所以由于存在这种情况，我们必须禁止指令重排，即<strong>加上volatile关键字</strong>，这样才算是完整的双重锁校验模式</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Lazy</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="title function_">Lazy</span><span class="params">()</span>&#123;&#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">volatile</span> <span class="keyword">static</span> Lazy lazy;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> Lazy <span class="title function_">getInstance</span><span class="params">()</span>&#123;</span><br><span class="line">            <span class="keyword">if</span> (lazy == <span class="literal">null</span>) &#123;  </span><br><span class="line">            <span class="keyword">synchronized</span> (Lazy.class) &#123;  </span><br><span class="line">                <span class="keyword">if</span> (lazy == <span class="literal">null</span>) &#123;  </span><br><span class="line">                    lazy = <span class="keyword">new</span> <span class="title class_">Lazy</span>();  </span><br><span class="line">                &#125;  </span><br><span class="line">            &#125;  </span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> lazy;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<br>
-
-<br>
-
-<h3 id="反射机制破坏单例"><a href="#反射机制破坏单例" class="headerlink" title="反射机制破坏单例"></a>反射机制破坏单例</h3><h4 id="增加校验"><a href="#增加校验" class="headerlink" title="增加校验"></a>增加校验</h4><p>虽然解决了线程安全问题、性能和原子性的问题，但因为存在反射机制，可以人为的去破坏单例模式。所以仍然存在安全问题</p>
-<p>我们可以在造构造器中判断是否存在这个实例来解决问题</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Lazy</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="title function_">Lazy</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="keyword">synchronized</span> (Lazy.class)&#123;</span><br><span class="line">            <span class="comment">//当这个实例已经存在了则不能使用反射机制创建对象</span></span><br><span class="line">            <span class="keyword">if</span> (lazy!=<span class="literal">null</span>)&#123;</span><br><span class="line">                <span class="keyword">throw</span> <span class="keyword">new</span> <span class="title class_">RuntimeException</span>(<span class="string">&quot;请勿使用反射机制破坏&quot;</span>);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">volatile</span> <span class="keyword">static</span> Lazy lazy;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> Lazy <span class="title function_">getInstance</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="keyword">if</span> (lazy == <span class="literal">null</span>) &#123;</span><br><span class="line">            <span class="keyword">synchronized</span> (Lazy.class) &#123;</span><br><span class="line">                <span class="keyword">if</span> (lazy == <span class="literal">null</span>) &#123;</span><br><span class="line">                    lazy = <span class="keyword">new</span> <span class="title class_">Lazy</span>();</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> lazy;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<br>
-
-<br>
-
-<h4 id="增加信号量"><a href="#增加信号量" class="headerlink" title="增加信号量"></a>增加信号量</h4><p>但这样也存在一点问题，反射机制创建的lazy对象与正常创建的lazy对象并不是一个对象，当第一次也是使用反射机制去创建lazy对象时，lazy!&#x3D;null是检测不出来是否存在这个单例的</p>
-<p>我们可以使用<strong>信号量的方式</strong>，这样虽然第一次可以使用反射机制获得到单例，但也只能获取到一次，某种程度上来说这也算一个单例</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Lazy</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="type">boolean</span> <span class="variable">flag</span> <span class="operator">=</span> <span class="literal">false</span>;</span><br><span class="line">    <span class="keyword">private</span> <span class="title function_">Lazy</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="keyword">synchronized</span> (Lazy.class)&#123;</span><br><span class="line">            <span class="keyword">if</span> (flag == <span class="literal">false</span>)&#123;</span><br><span class="line">                flag = <span class="literal">true</span>;</span><br><span class="line">                lazy=<span class="built_in">this</span>;</span><br><span class="line">            &#125;<span class="keyword">else</span> &#123;</span><br><span class="line">                <span class="keyword">throw</span> <span class="keyword">new</span> <span class="title class_">RuntimeException</span>(<span class="string">&quot;请勿使用反射机制破坏&quot;</span>);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">volatile</span> <span class="keyword">static</span> Lazy lazy;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> Lazy <span class="title function_">getInstance</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="keyword">if</span> (lazy == <span class="literal">null</span>) &#123;</span><br><span class="line">            <span class="keyword">synchronized</span> (Lazy.class) &#123;</span><br><span class="line">                <span class="keyword">if</span> (lazy == <span class="literal">null</span>) &#123;</span><br><span class="line">                    lazy = <span class="keyword">new</span> <span class="title class_">Lazy</span>();</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> lazy;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<br>
-
-<p>但但但是就算做到这样仍然不能防止被反射破坏，因为既然反射能获得到私有的构造器，它也能获取到私有静态变量，这样的话可以每次反射创建对象后再将信号量设置为原来的样子。但由于私有静态变量较难被反编译，因此这种方法也存在它的可用性</p>
-<blockquote>
-<p><strong>总结：懒汉式实现的单例模式是不可以防止被反射破坏的</strong></p>
-</blockquote>
-<br>
-
-<hr>
-<br>
-
-<h2 id="枚举模式"><a href="#枚举模式" class="headerlink" title="枚举模式"></a>枚举模式</h2><p>我们先来看一个枚举的单例模式的实现</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">enum</span>  <span class="title class_">EnumSingleton</span> &#123;</span><br><span class="line">    INSTANCE;</span><br><span class="line">    <span class="keyword">public</span> EnumSingleton <span class="title function_">getInstance</span><span class="params">()</span>&#123;</span><br><span class="line">        <span class="keyword">return</span> INSTANCE;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<br>
-
-<h3 id="使用无参构造器反射创建"><a href="#使用无参构造器反射创建" class="headerlink" title="使用无参构造器反射创建"></a>使用无参构造器反射创建</h3><p>当我们试图使用反射机制去创建这个枚举类时</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">Constructor&lt;EnumSingleton&gt; constructor= <span class="literal">null</span>;</span><br><span class="line">constructor = EnumSingleton.class.getDeclaredConstructor();</span><br><span class="line">constructor.setAccessible(<span class="literal">true</span>);</span><br><span class="line">EnumSingleton singleton= <span class="literal">null</span>;</span><br><span class="line">singleton = constructor.newInstance();</span><br><span class="line">System.out.println(singleton);</span><br></pre></td></tr></table></figure>
-
-<p>将会报异常：</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">Exception in thread &quot;main&quot; java.lang.NoSuchMethodException: com.lxp.pattern.singleton.EnumSingleton.&lt;init&gt;()</span><br></pre></td></tr></table></figure>
-
-<p>使用debug模式运行，会发现是因为EnumSingleton.class.getDeclaredConstructors()获取所有构造器，会发现并没有我们所设置的无参构造器，但是我们并没有在枚举类中设置其他的有参构造方法，这是怎么回事呢？查看编译后的源码，其继承了Enum类，所以会有（String.class,int.class）的构造器</p>
-<p><img src="https://jjw-beiqi.github.io/2022/03/21/singleton/image-20220321203503408.png" alt="image-20220321203503408"></p>
-<br>
-
-<h3 id="使用有参构造器反射创建"><a href="#使用有参构造器反射创建" class="headerlink" title="使用有参构造器反射创建"></a>使用有参构造器反射创建</h3><p>也许会有疑问，是不是因为自身的类没有无参构造方法才导致的异常？但执行下述代码后仍然会异常</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">Constructor&lt;EnumSingleton&gt; constructor= <span class="literal">null</span>;</span><br><span class="line">constructor = EnumSingleton.class.getDeclaredConstructor(String.class,<span class="type">int</span>.class);</span><br><span class="line">constructor.setAccessible(<span class="literal">true</span>);</span><br><span class="line">EnumSingleton singleton= <span class="literal">null</span>;</span><br><span class="line">singleton = constructor.newInstance();</span><br><span class="line">System.out.println(singleton);</span><br></pre></td></tr></table></figure>
-
-<p>抛出异常：</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">Exception in thread &quot;main&quot; java.lang.IllegalArgumentException: Cannot reflectively create enum objects</span><br></pre></td></tr></table></figure>
-
-<p><strong>Cannot reflectively create enum objects</strong> 这个异常的意思是不能使用反射机制创建枚举对象</p>
-<br>
-
-<h3 id="原因"><a href="#原因" class="headerlink" title="原因"></a>原因</h3><p>我们通过查看newInstance方法的源码发现，<strong>当对枚举类使用newInstance方法时会抛出异常</strong></p>
-<p><img src="https://jjw-beiqi.github.io/2022/03/21/singleton/image-20220321201936962.png" alt="image-20220321201936962"></p>
-<p>为了防止反射机制破坏懒汉模式，我们可以使用枚举的方式实现单例模式</p>
-<blockquote>
-<p>枚举是最好的单例模式，同时枚举模式也能保证线程安全</p>
-</blockquote>
-<br>
-
-<hr>
-<br>
-
-<h2 id="登记式"><a href="#登记式" class="headerlink" title="登记式"></a>登记式</h2><blockquote>
-<p>这种方式能达到双检锁方式一样的功效，但实现更简单。对静态域使用延迟初始化，应使用这种方式而不是双检锁方式。这种方式只适用于静态域的情况，双检锁方式可在实例域需要延迟初始化时使用。</p>
-<p>描述：它跟饿汉式不同的是：饿汉式只要 Singleton 类被装载了，那么 instance 就会被实例化（没有达到 lazy loading 效果），而这种方式是 <strong>Holder类被装载了，instance 不一定被初始化。因为 SingletonHolder 类没有被主动使用，只有通过显式调用 getInstance 方法时，才会显式装载 SingletonHolder 类，从而实例化 instance。</strong></p>
-</blockquote>
-<br>
-
-<p><strong>但没有同步锁是如何保证线程安全的呢？</strong></p>
-<p>jvm在加载Holder时不会连SingletonHolder一同加载（ lazy loading ），这里涉及到<strong>类的加载时机</strong></p>
-<blockquote>
-<ol>
-<li>遇到 new 、getstatic 、putstatic 或 invokestatic 这4条字节码指令时，如果类没有进行过初始化，则需要先触发其初始化 。生成这4条指令的最常见的Java代码场景是：使用new关键字实例化对象的时候、读取或设置一个类的静态字段（被final修饰、已在编译期把结果放入常量池的静态字段除外）的时候，以及凋用一个类的静态方法的时候。</li>
-<li>使用 java-lang 、 reflect 包的方法对类进行反射调用的时候，如果类没有进行过初始化，则需要先触发其初始化 。</li>
-<li>当初始化一个类的时候，如果发现其父类还没有进行过初始化，则需要先触发其父类的初始化 。</li>
-<li>当虚拟机启动时，用户需要指定一个要执行的主类（包含 main() 方法的那个类），虚拟机会先初始化这个主类。</li>
-<li>当使用 JDK 1.7 的动态语言支持时，如果一个 java.lang.invokeMethodHandle 实例最后的解析结果 REF-getStatic 、 REF_putStatic 、 REF invokeStatic 的方法句柄，并且这个方法句柄所对应的类没有进行过初始化，则需要先触发其初始化</li>
-</ol>
-</blockquote>
-<br>
-
-<p><strong>外部调用getInstance()方法后，会触发SingletonHolder的加载，任意一个线程获取该【类加载】的锁后，就能保SingletonHolder首次给new出来，只有一个线程进入该内部类。加载完成后，static成员变量是唯一的。</strong></p>
-<br>
-
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Holder</span> &#123;</span><br><span class="line">    </span><br><span class="line">     <span class="keyword">private</span> <span class="title function_">Holder</span> <span class="params">()</span>&#123;&#125;  </span><br><span class="line">    </span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">class</span> <span class="title class_">SingletonHolder</span> &#123;  </span><br><span class="line">    	<span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="type">Holder</span> <span class="variable">holder</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Holder</span>();  </span><br><span class="line">    &#125;  </span><br><span class="line">    </span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> Holder <span class="title function_">getInstance</span><span class="params">()</span> &#123;  </span><br><span class="line">        <span class="keyword">return</span> SingletonHolder.holder;  </span><br><span class="line">    &#125;  </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-]]></content>
-      <categories>
-        <category>设计模式</category>
-      </categories>
-      <tags>
-        <tag>单例模式</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>SpringMVC学习笔记</title>
     <url>/2022/03/20/SpringMVC/</url>
     <content><![CDATA[<h1 id="SpringMvc"><a href="#SpringMvc" class="headerlink" title="SpringMvc"></a>SpringMvc</h1><p>SpringMvc是Spring的一个后续产品，是Spring的一个子项目</p>
@@ -1069,6 +895,180 @@
       </categories>
       <tags>
         <tag>SpringMVC</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>singleton</title>
+    <url>/2022/03/21/singleton/</url>
+    <content><![CDATA[<h1 id="单例模式"><a href="#单例模式" class="headerlink" title="单例模式"></a>单例模式</h1><blockquote>
+<p>单例模式（Singleton Pattern）是 Java 中最简单的设计模式之一。这种类型的设计模式属于创建型模式，它提供了一种创建对象的最佳方式。</p>
+<p>这种模式涉及到一个单一的类，该类负责创建自己的对象，同时确保只有单个对象被创建。这个类提供了一种访问其唯一的对象的方式，可以直接访问，不需要实例化该类的对象。</p>
+</blockquote>
+<p><strong>注意：</strong></p>
+<ul>
+<li>1、单例类只能有一个实例。</li>
+<li>2、单例类必须自己创建自己的唯一实例。</li>
+<li>3、单例类必须给所有其他对象提供这一实例。</li>
+</ul>
+<br>
+
+<p><strong>优点：</strong></p>
+<ul>
+<li>1、在内存里只有一个实例，减少了内存的开销，尤其是频繁的创建和销毁实例（比如管理学院首页页面缓存）。</li>
+<li>2、避免对资源的多重占用（比如写文件操作）。</li>
+</ul>
+<br>
+
+<p><strong>缺点：</strong></p>
+<p>没有接口，不能继承，与单一职责原则冲突，一个类应该只关心内部逻辑，而不关心外面怎么样来实例化。</p>
+<br>
+
+<p><strong>使用场景：</strong></p>
+<ul>
+<li>1、要求生产唯一序列号。</li>
+<li>2、WEB 中的计数器，不用每次刷新都在数据库里加一次，用单例先缓存起来。</li>
+<li>3、创建的一个对象需要消耗的资源过多，比如 I&#x2F;O 与数据库的连接等。</li>
+</ul>
+<br>
+
+<hr>
+<h1 id="单例模式的几种实现方式"><a href="#单例模式的几种实现方式" class="headerlink" title="单例模式的几种实现方式"></a>单例模式的几种实现方式</h1><br>
+
+<h2 id="饿汉模式"><a href="#饿汉模式" class="headerlink" title="饿汉模式"></a>饿汉模式</h2><blockquote>
+<p>描述：基于 classloader 机制避免了多线程的同步问题，不过，instance 在类装载时就实例化，虽然导致类装载的原因有很多种，在单例模式中大多数都是调用 getInstance 方法， 但是也不能确定有其他的方式（或者其他的静态方法）导致类装载，这时候初始化 instance 显然没有达到 lazy loading 的效果。</p>
+</blockquote>
+<p>如果后续并没有使用到，可能会造成浪费空间</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Hungry</span> &#123;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">private</span> <span class="title function_">Hungry</span><span class="params">()</span>&#123;&#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> <span class="keyword">static</span> <span class="type">Hungry</span> <span class="variable">HUNGRY</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Hungry</span>();</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> Hungry <span class="title function_">getInstance</span><span class="params">()</span>&#123;</span><br><span class="line">        <span class="keyword">return</span> HUNGRY;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<br>
+
+<hr>
+<br>
+
+<h2 id="懒汉模式"><a href="#懒汉模式" class="headerlink" title="懒汉模式"></a>懒汉模式</h2><p>当使用到的时候才去加载这个类，避免了空间的浪费</p>
+<p>这种方式是最基本的实现方式，这种实现最大的问题就是不支持多线程。因为没有加锁 synchronized，所以严格意义上它并不算单例模式。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Lazy</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="title function_">Lazy</span><span class="params">()</span>&#123;&#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> Lazy lazy;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> Lazy <span class="title function_">getInstance</span><span class="params">()</span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (lazy == <span class="literal">null</span>)&#123;</span><br><span class="line">            lazy = <span class="keyword">new</span> <span class="title class_">Lazy</span>();</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> lazy;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<br>
+
+<p>上述实现存在一个明显的问题，就是在多线程的情况下不能保证只返回了一个实例，因为getInstance()方法没有加同步锁，可能会造成线程安全的问题</p>
+<p>因此我们需要在getInstance()方法上加上同步锁</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Lazy</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="title function_">Lazy</span><span class="params">()</span>&#123;&#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> Lazy lazy;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">synchronized</span> Lazy <span class="title function_">getInstance</span><span class="params">()</span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (lazy == <span class="literal">null</span>)&#123;</span><br><span class="line">            lazy = <span class="keyword">new</span> <span class="title class_">Lazy</span>();</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> lazy;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<br>
+
+<p>在给getInstance()方法加上同步锁之后，这个方法变成线程安全的了，也不会有产生多个实例的情况了。</p>
+<p>但是这样做的话我们发现每一次判断lazy实例是否存在的时候就要去拿到同步锁，而判断与线程安全是无关的，因此在方法上加同步锁会大大降低性能。因此我们采取<strong>双重锁校验模式</strong>，将同步代码块放在方法中，每次先判断实例是否存在，如果存在就直接返回实例；不存在再去拿同步锁进行初始化，这样可以减少线程上下文的切换，提升性能</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Lazy</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="title function_">Lazy</span><span class="params">()</span>&#123;&#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> Lazy lazy;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> Lazy <span class="title function_">getInstance</span><span class="params">()</span>&#123;</span><br><span class="line">            <span class="keyword">if</span> (lazy == <span class="literal">null</span>) &#123;  </span><br><span class="line">            <span class="keyword">synchronized</span> (Lazy.class) &#123;  </span><br><span class="line">                <span class="keyword">if</span> (lazy == <span class="literal">null</span>) &#123;  </span><br><span class="line">                    lazy = <span class="keyword">new</span> <span class="title class_">Lazy</span>();  </span><br><span class="line">                &#125;  </span><br><span class="line">            &#125;  </span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> lazy;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<br>
+
+<p>上述实现代码，似乎很完美的解决了线程安全问题和性能的问题，但它仍然是线程不安全的。<strong>因为初始化代码的new关键字并不是原子性操作</strong></p>
+<blockquote>
+<p>new的操作步骤：</p>
+<ul>
+<li>分配内存空间</li>
+<li>执行构造方法，初始化对象</li>
+<li>把这个对象指向这个空间</li>
+</ul>
+<p>由于不是原子性操作，可能会造成指令重排的问题，例如先将这个对象指向这个空间，再去初始化对象</p>
+</blockquote>
+<p>情况：一个线程A执行代码，在new操作时发生了指令重排，导致先将对象指向分配的空间，再去初始化对象；这时线程B进入发现这个对象已经指向了一个空间，<strong>它就会认为这个对象!&#x3D;null</strong>，但实际上这个对象可能还未完成初始化对象</p>
+<p>所以由于存在这种情况，我们必须禁止指令重排，即<strong>加上volatile关键字</strong>，这样才算是完整的双重锁校验模式</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Lazy</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="title function_">Lazy</span><span class="params">()</span>&#123;&#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">volatile</span> <span class="keyword">static</span> Lazy lazy;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> Lazy <span class="title function_">getInstance</span><span class="params">()</span>&#123;</span><br><span class="line">            <span class="keyword">if</span> (lazy == <span class="literal">null</span>) &#123;  </span><br><span class="line">            <span class="keyword">synchronized</span> (Lazy.class) &#123;  </span><br><span class="line">                <span class="keyword">if</span> (lazy == <span class="literal">null</span>) &#123;  </span><br><span class="line">                    lazy = <span class="keyword">new</span> <span class="title class_">Lazy</span>();  </span><br><span class="line">                &#125;  </span><br><span class="line">            &#125;  </span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> lazy;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<br>
+
+<br>
+
+<h3 id="反射机制破坏单例"><a href="#反射机制破坏单例" class="headerlink" title="反射机制破坏单例"></a>反射机制破坏单例</h3><h4 id="增加校验"><a href="#增加校验" class="headerlink" title="增加校验"></a>增加校验</h4><p>虽然解决了线程安全问题、性能和原子性的问题，但因为存在反射机制，可以人为的去破坏单例模式。所以仍然存在安全问题</p>
+<p>我们可以在造构造器中判断是否存在这个实例来解决问题</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Lazy</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="title function_">Lazy</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="keyword">synchronized</span> (Lazy.class)&#123;</span><br><span class="line">            <span class="comment">//当这个实例已经存在了则不能使用反射机制创建对象</span></span><br><span class="line">            <span class="keyword">if</span> (lazy!=<span class="literal">null</span>)&#123;</span><br><span class="line">                <span class="keyword">throw</span> <span class="keyword">new</span> <span class="title class_">RuntimeException</span>(<span class="string">&quot;请勿使用反射机制破坏&quot;</span>);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">volatile</span> <span class="keyword">static</span> Lazy lazy;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> Lazy <span class="title function_">getInstance</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="keyword">if</span> (lazy == <span class="literal">null</span>) &#123;</span><br><span class="line">            <span class="keyword">synchronized</span> (Lazy.class) &#123;</span><br><span class="line">                <span class="keyword">if</span> (lazy == <span class="literal">null</span>) &#123;</span><br><span class="line">                    lazy = <span class="keyword">new</span> <span class="title class_">Lazy</span>();</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> lazy;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<br>
+
+<br>
+
+<h4 id="增加信号量"><a href="#增加信号量" class="headerlink" title="增加信号量"></a>增加信号量</h4><p>但这样也存在一点问题，反射机制创建的lazy对象与正常创建的lazy对象并不是一个对象，当第一次也是使用反射机制去创建lazy对象时，lazy!&#x3D;null是检测不出来是否存在这个单例的</p>
+<p>我们可以使用<strong>信号量的方式</strong>，这样虽然第一次可以使用反射机制获得到单例，但也只能获取到一次，某种程度上来说这也算一个单例</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Lazy</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="type">boolean</span> <span class="variable">flag</span> <span class="operator">=</span> <span class="literal">false</span>;</span><br><span class="line">    <span class="keyword">private</span> <span class="title function_">Lazy</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="keyword">synchronized</span> (Lazy.class)&#123;</span><br><span class="line">            <span class="keyword">if</span> (flag == <span class="literal">false</span>)&#123;</span><br><span class="line">                flag = <span class="literal">true</span>;</span><br><span class="line">                lazy=<span class="built_in">this</span>;</span><br><span class="line">            &#125;<span class="keyword">else</span> &#123;</span><br><span class="line">                <span class="keyword">throw</span> <span class="keyword">new</span> <span class="title class_">RuntimeException</span>(<span class="string">&quot;请勿使用反射机制破坏&quot;</span>);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">volatile</span> <span class="keyword">static</span> Lazy lazy;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> Lazy <span class="title function_">getInstance</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="keyword">if</span> (lazy == <span class="literal">null</span>) &#123;</span><br><span class="line">            <span class="keyword">synchronized</span> (Lazy.class) &#123;</span><br><span class="line">                <span class="keyword">if</span> (lazy == <span class="literal">null</span>) &#123;</span><br><span class="line">                    lazy = <span class="keyword">new</span> <span class="title class_">Lazy</span>();</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> lazy;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<br>
+
+<p>但但但是就算做到这样仍然不能防止被反射破坏，因为既然反射能获得到私有的构造器，它也能获取到私有静态变量，这样的话可以每次反射创建对象后再将信号量设置为原来的样子。但由于私有静态变量较难被反编译，因此这种方法也存在它的可用性</p>
+<blockquote>
+<p><strong>总结：懒汉式实现的单例模式是不可以防止被反射破坏的</strong></p>
+</blockquote>
+<br>
+
+<hr>
+<br>
+
+<h2 id="枚举模式"><a href="#枚举模式" class="headerlink" title="枚举模式"></a>枚举模式</h2><p>我们先来看一个枚举的单例模式的实现</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">enum</span>  <span class="title class_">EnumSingleton</span> &#123;</span><br><span class="line">    INSTANCE;</span><br><span class="line">    <span class="keyword">public</span> EnumSingleton <span class="title function_">getInstance</span><span class="params">()</span>&#123;</span><br><span class="line">        <span class="keyword">return</span> INSTANCE;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<br>
+
+<h3 id="使用无参构造器反射创建"><a href="#使用无参构造器反射创建" class="headerlink" title="使用无参构造器反射创建"></a>使用无参构造器反射创建</h3><p>当我们试图使用反射机制去创建这个枚举类时</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">Constructor&lt;EnumSingleton&gt; constructor= <span class="literal">null</span>;</span><br><span class="line">constructor = EnumSingleton.class.getDeclaredConstructor();</span><br><span class="line">constructor.setAccessible(<span class="literal">true</span>);</span><br><span class="line">EnumSingleton singleton= <span class="literal">null</span>;</span><br><span class="line">singleton = constructor.newInstance();</span><br><span class="line">System.out.println(singleton);</span><br></pre></td></tr></table></figure>
+
+<p>将会报异常：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">Exception in thread &quot;main&quot; java.lang.NoSuchMethodException: com.lxp.pattern.singleton.EnumSingleton.&lt;init&gt;()</span><br></pre></td></tr></table></figure>
+
+<p>使用debug模式运行，会发现是因为EnumSingleton.class.getDeclaredConstructors()获取所有构造器，会发现并没有我们所设置的无参构造器，但是我们并没有在枚举类中设置其他的有参构造方法，这是怎么回事呢？查看编译后的源码，其继承了Enum类，所以会有（String.class,int.class）的构造器</p>
+<p><img src="https://jjw-beiqi.github.io/2022/03/21/singleton/image-20220321203503408.png" alt="image-20220321203503408"></p>
+<br>
+
+<h3 id="使用有参构造器反射创建"><a href="#使用有参构造器反射创建" class="headerlink" title="使用有参构造器反射创建"></a>使用有参构造器反射创建</h3><p>也许会有疑问，是不是因为自身的类没有无参构造方法才导致的异常？但执行下述代码后仍然会异常</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">Constructor&lt;EnumSingleton&gt; constructor= <span class="literal">null</span>;</span><br><span class="line">constructor = EnumSingleton.class.getDeclaredConstructor(String.class,<span class="type">int</span>.class);</span><br><span class="line">constructor.setAccessible(<span class="literal">true</span>);</span><br><span class="line">EnumSingleton singleton= <span class="literal">null</span>;</span><br><span class="line">singleton = constructor.newInstance();</span><br><span class="line">System.out.println(singleton);</span><br></pre></td></tr></table></figure>
+
+<p>抛出异常：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">Exception in thread &quot;main&quot; java.lang.IllegalArgumentException: Cannot reflectively create enum objects</span><br></pre></td></tr></table></figure>
+
+<p><strong>Cannot reflectively create enum objects</strong> 这个异常的意思是不能使用反射机制创建枚举对象</p>
+<br>
+
+<h3 id="原因"><a href="#原因" class="headerlink" title="原因"></a>原因</h3><p>我们通过查看newInstance方法的源码发现，<strong>当对枚举类使用newInstance方法时会抛出异常</strong></p>
+<p><img src="https://jjw-beiqi.github.io/2022/03/21/singleton/image-20220321201936962.png" alt="image-20220321201936962"></p>
+<p>为了防止反射机制破坏懒汉模式，我们可以使用枚举的方式实现单例模式</p>
+<blockquote>
+<p>枚举是最好的单例模式，同时枚举模式也能保证线程安全</p>
+</blockquote>
+<br>
+
+<hr>
+<br>
+
+<h2 id="登记式"><a href="#登记式" class="headerlink" title="登记式"></a>登记式</h2><blockquote>
+<p>这种方式能达到双检锁方式一样的功效，但实现更简单。对静态域使用延迟初始化，应使用这种方式而不是双检锁方式。这种方式只适用于静态域的情况，双检锁方式可在实例域需要延迟初始化时使用。</p>
+<p>描述：它跟饿汉式不同的是：饿汉式只要 Singleton 类被装载了，那么 instance 就会被实例化（没有达到 lazy loading 效果），而这种方式是 <strong>Holder类被装载了，instance 不一定被初始化。因为 SingletonHolder 类没有被主动使用，只有通过显式调用 getInstance 方法时，才会显式装载 SingletonHolder 类，从而实例化 instance。</strong></p>
+</blockquote>
+<br>
+
+<p><strong>但没有同步锁是如何保证线程安全的呢？</strong></p>
+<p>jvm在加载Holder时不会连SingletonHolder一同加载（ lazy loading ），这里涉及到<strong>类的加载时机</strong></p>
+<blockquote>
+<ol>
+<li>遇到 new 、getstatic 、putstatic 或 invokestatic 这4条字节码指令时，如果类没有进行过初始化，则需要先触发其初始化 。生成这4条指令的最常见的Java代码场景是：使用new关键字实例化对象的时候、读取或设置一个类的静态字段（被final修饰、已在编译期把结果放入常量池的静态字段除外）的时候，以及凋用一个类的静态方法的时候。</li>
+<li>使用 java-lang 、 reflect 包的方法对类进行反射调用的时候，如果类没有进行过初始化，则需要先触发其初始化 。</li>
+<li>当初始化一个类的时候，如果发现其父类还没有进行过初始化，则需要先触发其父类的初始化 。</li>
+<li>当虚拟机启动时，用户需要指定一个要执行的主类（包含 main() 方法的那个类），虚拟机会先初始化这个主类。</li>
+<li>当使用 JDK 1.7 的动态语言支持时，如果一个 java.lang.invokeMethodHandle 实例最后的解析结果 REF-getStatic 、 REF_putStatic 、 REF invokeStatic 的方法句柄，并且这个方法句柄所对应的类没有进行过初始化，则需要先触发其初始化</li>
+</ol>
+</blockquote>
+<br>
+
+<p><strong>外部调用getInstance()方法后，会触发SingletonHolder的加载，任意一个线程获取该【类加载】的锁后，就能保SingletonHolder首次给new出来，只有一个线程进入该内部类。加载完成后，static成员变量是唯一的。</strong></p>
+<br>
+
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Holder</span> &#123;</span><br><span class="line">    </span><br><span class="line">     <span class="keyword">private</span> <span class="title function_">Holder</span> <span class="params">()</span>&#123;&#125;  </span><br><span class="line">    </span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">class</span> <span class="title class_">SingletonHolder</span> &#123;  </span><br><span class="line">    	<span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="type">Holder</span> <span class="variable">holder</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Holder</span>();  </span><br><span class="line">    &#125;  </span><br><span class="line">    </span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> Holder <span class="title function_">getInstance</span><span class="params">()</span> &#123;  </span><br><span class="line">        <span class="keyword">return</span> SingletonHolder.holder;  </span><br><span class="line">    &#125;  </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+]]></content>
+      <categories>
+        <category>设计模式</category>
+      </categories>
+      <tags>
+        <tag>单例模式</tag>
       </tags>
   </entry>
   <entry>
