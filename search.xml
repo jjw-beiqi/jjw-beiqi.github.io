@@ -15,520 +15,6 @@
       </tags>
   </entry>
   <entry>
-    <title>SpringMVC学习笔记</title>
-    <url>/2022/03/20/SpringMVC/</url>
-    <content><![CDATA[<h1 id="SpringMvc"><a href="#SpringMvc" class="headerlink" title="SpringMvc"></a>SpringMvc</h1><p>SpringMvc是Spring的一个后续产品，是Spring的一个子项目</p>
-<p>SpringMvc是Spring为表述层开发提供的一整套完备的解决方案</p>
-<h2 id="创建SpringMvc项目"><a href="#创建SpringMvc项目" class="headerlink" title="创建SpringMvc项目"></a>创建SpringMvc项目</h2><ol>
-<li><p>创建maven下的web项目</p>
-<p>参考：<a href="https://blog.csdn.net/weixin_42222334/article/details/80362126">https://blog.csdn.net/weixin_42222334/article/details/80362126</a></p>
-</li>
-<li><p>导入依赖</p>
-<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">     <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>javax.servlet<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">     <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>javax.servlet-api<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">     <span class="tag">&lt;<span class="name">version</span>&gt;</span>3.1.0<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">   <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line">   </span><br><span class="line">   <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">     <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">     <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-webmvc<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">     <span class="tag">&lt;<span class="name">version</span>&gt;</span>5.3.15<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">   <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line">   </span><br><span class="line">   <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">     <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>ch.qos.logback<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">     <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>logback-classic<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">     <span class="tag">&lt;<span class="name">version</span>&gt;</span>1.2.10<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">   <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
-</li>
-<li><p>配置web.xml文件</p>
-<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="meta">&lt;!DOCTYPE <span class="keyword">web-app</span> <span class="keyword">PUBLIC</span></span></span><br><span class="line"><span class="meta"> <span class="string">&quot;-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN&quot;</span></span></span><br><span class="line"><span class="meta"> <span class="string">&quot;http://java.sun.com/dtd/web-app_2_3.dtd&quot;</span> &gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">web-app</span>&gt;</span></span><br><span class="line">  <span class="comment">&lt;!-- 配置SpringMvc的前端控制器，对浏览器发送的请求进行统一处理 --&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">servlet</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">servlet-name</span>&gt;</span>SpringMvc<span class="tag">&lt;/<span class="name">servlet-name</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">servlet-class</span>&gt;</span>org.springframework.web.servlet.DispatcherServlet<span class="tag">&lt;/<span class="name">servlet-class</span>&gt;</span></span><br><span class="line">    <span class="comment">&lt;!-- 配置SpringMvc配置文件的位置和名称 --&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">init-param</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">param-name</span>&gt;</span>contextConfigLocation<span class="tag">&lt;/<span class="name">param-name</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">param-value</span>&gt;</span>classpath:springMVC.xml<span class="tag">&lt;/<span class="name">param-value</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">init-param</span>&gt;</span></span><br><span class="line">    <span class="comment">&lt;!-- 将前端控制器DispatherServlet的初始化时间提前到服务器启动时 --&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">load-on-startup</span>&gt;</span>1<span class="tag">&lt;/<span class="name">load-on-startup</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">servlet</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">servlet-mapping</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">servlet-name</span>&gt;</span>SpringMvc<span class="tag">&lt;/<span class="name">servlet-name</span>&gt;</span></span><br><span class="line">    <span class="comment">&lt;!--</span></span><br><span class="line"><span class="comment">      设置springmvc的核心控制器所能处理的请求的请求路径</span></span><br><span class="line"><span class="comment">      /所匹配的请求可以是/login或.js...</span></span><br><span class="line"><span class="comment">      但不能匹配.jsp的请求</span></span><br><span class="line"><span class="comment">     --&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">url-pattern</span>&gt;</span>/<span class="tag">&lt;/<span class="name">url-pattern</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">servlet-mapping</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">web-app</span>&gt;</span></span><br></pre></td></tr></table></figure></li>
-</ol>
-<br>
-
-
-<hr>
-<br>
-
-<h2 id="配置springMVC-xml"><a href="#配置springMVC-xml" class="headerlink" title="配置springMVC.xml"></a>配置springMVC.xml</h2><figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="meta">&lt;?xml version=<span class="string">&quot;1.0&quot;</span> encoding=<span class="string">&quot;UTF-8&quot;</span>?&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">beans</span> <span class="attr">xmlns</span>=<span class="string">&quot;http://www.springframework.org/schema/beans&quot;</span></span></span><br><span class="line"><span class="tag">       <span class="attr">xmlns:xsi</span>=<span class="string">&quot;http://www.w3.org/2001/XMLSchema-instance&quot;</span></span></span><br><span class="line"><span class="tag">       <span class="attr">xmlns:context</span>=<span class="string">&quot;http://www.springframework.org/schema/context&quot;</span></span></span><br><span class="line"><span class="tag">       <span class="attr">xsi:schemaLocation</span>=<span class="string">&quot;http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context https://www.springframework.org/schema/context/spring-context.xsd&quot;</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">&lt;!-- 扫描组件 --&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">context:component-scan</span> <span class="attr">base-package</span>=<span class="string">&quot;com&quot;</span>/&gt;</span></span><br><span class="line">    <span class="comment">&lt;!-- 配置视图解析器，也可以选择其他的视图解析器 --&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">&quot;viewResolver&quot;</span> <span class="attr">class</span>=<span class="string">&quot;org.thymeleaf.spring5.view.ThymeleafViewResolver&quot;</span>&gt;</span></span><br><span class="line">        <span class="comment">&lt;!-- 视图解析器优先级 --&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;order&quot;</span> <span class="attr">value</span>=<span class="string">&quot;1&quot;</span>/&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;characterEncoding&quot;</span> <span class="attr">value</span>=<span class="string">&quot;UTF-8&quot;</span>/&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;templateEngine&quot;</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">bean</span> <span class="attr">class</span>=<span class="string">&quot;org.thymeleaf.spring5.SpringTemplateEngine&quot;</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;templateResolver&quot;</span>&gt;</span></span><br><span class="line">                    <span class="tag">&lt;<span class="name">bean</span> <span class="attr">class</span>=<span class="string">&quot;org.thymeleaf.spring5.templateresolver.SpringResourceTemplateResolver&quot;</span>&gt;</span></span><br><span class="line">                        <span class="comment">&lt;!-- 视图前缀 --&gt;</span></span><br><span class="line">                        <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;prefix&quot;</span> <span class="attr">value</span>=<span class="string">&quot;/WEB-INF/templates/&quot;</span>/&gt;</span></span><br><span class="line">                        <span class="comment">&lt;!-- 视图后缀 --&gt;</span></span><br><span class="line">                        <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;suffix&quot;</span> <span class="attr">value</span>=<span class="string">&quot;.html&quot;</span>/&gt;</span></span><br><span class="line">                        <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;templateMode&quot;</span> <span class="attr">value</span>=<span class="string">&quot;HTML5&quot;</span>/&gt;</span></span><br><span class="line">                        <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;characterEncoding&quot;</span> <span class="attr">value</span>=<span class="string">&quot;UTF-8&quot;</span>/&gt;</span></span><br><span class="line">                    <span class="tag">&lt;/<span class="name">bean</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;/<span class="name">bean</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">bean</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">beans</span>&gt;</span></span><br></pre></td></tr></table></figure>
-
-<br>
-
-<p><strong>扩展：过滤器、拦截器、aop 顺序</strong></p>
-<p>由于SpringMVC的前端控制器是DispatherServlet所以有必要了解一下过滤器、拦截器、aop 的执行顺序</p>
-<p>filter—&gt;Interceptor—-&gt;@Aspect –&gt;Interceptor</p>
-<p><img src="https://jjw-beiqi.github.io/2022/03/20/SpringMVC/20151219102326359.png" alt="img"></p>
-<br>
-
-<hr>
-<br>
-
-<h2 id="SpringMVC的请求"><a href="#SpringMVC的请求" class="headerlink" title="SpringMVC的请求"></a>SpringMVC的请求</h2><br>
-
-<h3 id="RequestMapping"><a href="#RequestMapping" class="headerlink" title="@RequestMapping"></a>@RequestMapping</h3><p>@RequestMapping注解的作用就是将请求和处理请求的控制器方法关联起来，建立映射关系</p>
-<ul>
-<li>标识一个类：设置请求的请求路径的初始信息</li>
-<li>标识一个方法：设置映射请求请求路径的具体信息</li>
-</ul>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@Controller</span></span><br><span class="line"> <span class="meta">@RequestMapping(value=&quot;/test&quot;)</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">controller</span> &#123;</span><br><span class="line">    <span class="meta">@RequestMapping(value=&quot;index&quot;)</span></span><br><span class="line">    <span class="keyword">public</span> String <span class="title function_">index</span><span class="params">()</span>&#123;</span><br><span class="line">        <span class="comment">//返回视图名称</span></span><br><span class="line">        <span class="keyword">return</span> <span class="string">&quot;index&quot;</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//http://localhost:8080/springmvc/test/index</span></span><br></pre></td></tr></table></figure>
-
-<p>浏览器发送请求，若请求地址符合前端控制器的url-pattern，该请求就会被前端控制器DispatcherServlet处理。前端控制器会读取SpringMvc的核心配置文件，通过扫描组件会找到控制器，将请求地址和控制器中@RequestMapping注解的value属性值进行匹配，若匹配成功，该注解所标识的控制器方法就是处理请求的方法。处理请求的方法需要返回一个字符串类型的视图名称，该视图名称会被视图解析器解析，通过Thymeleaf（也可以使用其他的视图解析器）对视图进行渲染，最终转发到视图所对应页面</p>
-<br>
-
-<p><strong>@RequestMapping中的value属性</strong></p>
-<p>@RequestMapping注解的value属性是一个字符串类型的数组，表示该请求映射能够匹配多个请求地址所对应的请求</p>
-<p>@RequestMapping注解的value属性必须设置</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@RequestMapping(value=&#123;&quot;index&quot;,&quot;test&quot;&#125;)</span></span><br><span class="line">   <span class="keyword">public</span> String <span class="title function_">index</span><span class="params">()</span>&#123;</span><br><span class="line">       <span class="comment">//返回视图名称</span></span><br><span class="line">       <span class="keyword">return</span> <span class="string">&quot;index&quot;</span>;</span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure>
-
-<br>
-
-<p><strong>@RequestMapping中的method属性</strong></p>
-<p>@RequestMapping中的method属性通过请求的请求方式（get&#x2F;post匹配请求映射）</p>
-<p>@RequestMapping中的method属性是一个RequestMethod类型的数组，表示该请求映射能够匹配多种请求方式的请求</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@RequestMapping(value=&quot;index&quot;,method=RequestMethod.GET)</span></span><br><span class="line">   <span class="keyword">public</span> String <span class="title function_">index</span><span class="params">()</span>&#123;</span><br><span class="line">       <span class="comment">//返回视图名称</span></span><br><span class="line">       <span class="keyword">return</span> <span class="string">&quot;index&quot;</span>;</span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure>
-
-<br>
-
-<p><strong>@RequestMapping的派生注解</strong></p>
-<ul>
-<li><p>@GetMapping</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">//等同于@RequestMapping(method=RequestMethod.GET)</span></span><br></pre></td></tr></table></figure>
-</li>
-<li><p>@PostMapping</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">//等同于@RequestMapping(method=RequestMethod.POST)</span></span><br></pre></td></tr></table></figure>
-
-<p>…</p>
-</li>
-</ul>
-<br>
-
-<p><strong>@RequestMapping中的params属性</strong></p>
-<p>@RequestMapping中的params属性通过请求的请求参数匹配请求映射</p>
-<p>@RequestMapping中的params属性是一个字符串的数组，可以通过四种表达式设置请求参数和请求映射的匹配关系</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&quot;param&quot;:要求请求映射所匹配的请求必须携带param请求参数</span><br><span class="line">&quot;param&quot;:要求请求映射所匹配的请求必须不能携带param请求参数</span><br><span class="line">&quot;param=value&quot;:要求请求映射所匹配的请求必须携带param请求参数且param=value&quot;</span><br><span class="line">param!=value&quot;:要求请求映射所匹配的请求必须携带param请求参数但是param!=value</span><br></pre></td></tr></table></figure>
-
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@RequestMapping(value=&quot;index&quot;,param=&#123;&quot;usename&quot;,&quot;!abc&quot;&#125;)</span></span><br><span class="line">   <span class="keyword">public</span> String <span class="title function_">index</span><span class="params">()</span>&#123;</span><br><span class="line">       <span class="comment">//返回视图名称</span></span><br><span class="line">       <span class="keyword">return</span> <span class="string">&quot;index&quot;</span>;</span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure>
-
-<br>
-
-<p><strong>SpringMVC支持ant风格的路径</strong></p>
-<p>？：表示任意的单个字符</p>
-<p>*：表示任意的0个或多个字符</p>
-<p>**：表示任意的一层或多层目录</p>
-<br>
-
-<hr>
-<br>
-
-<h3 id="SpringMVC获取请求参数"><a href="#SpringMVC获取请求参数" class="headerlink" title="SpringMVC获取请求参数"></a>SpringMVC获取请求参数</h3><p>可以使用servletAPI获取参数，但基本不使用</p>
-<p>当发送的参数名与@RequestMapping标识方法中参数名一致时，会自动匹配</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@RequestMapping(value=&quot;index&quot;)</span></span><br><span class="line"><span class="keyword">public</span> String <span class="title function_">index</span><span class="params">(String username, String password)</span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="string">&quot;index&quot;</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<br>
-
-<p><strong>当有多个请求参数名一样时，如： …?hobby&#x3D;a&amp;hobby&#x3D;b</strong></p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">//可以这么写</span></span><br><span class="line"><span class="meta">@RequestMapping(value=&quot;index&quot;)</span></span><br><span class="line"><span class="keyword">public</span> String <span class="title function_">index</span><span class="params">(String hobby)</span>&#123; <span class="comment">//hobby=&quot;a,b&quot;</span></span><br><span class="line">    <span class="keyword">return</span> <span class="string">&quot;index&quot;</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//或</span></span><br><span class="line"><span class="meta">@RequestMapping(value=&quot;index&quot;)</span></span><br><span class="line"><span class="keyword">public</span> String <span class="title function_">index</span><span class="params">(String[] hobby)</span>&#123; <span class="comment">//hobby=[a,b]</span></span><br><span class="line">    <span class="keyword">return</span> <span class="string">&quot;index&quot;</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<br>
-
-<p><strong>@RequestParam()</strong></p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">//当请求参数名和方法参数名不一致时，使用@RequestParam()</span></span><br><span class="line"><span class="meta">@RequestMapping(value=&quot;index&quot;)</span></span><br><span class="line"><span class="keyword">public</span> String <span class="title function_">index</span><span class="params">(</span></span><br><span class="line"><span class="params">    <span class="meta">@RequestParam(&quot;user_name&quot;)</span> String username, </span></span><br><span class="line"><span class="params">    String password)</span>&#123; </span><br><span class="line">    <span class="keyword">return</span> <span class="string">&quot;index&quot;</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">@RequestParam()</span>将请求参数和方法参数映射起来，属性：</span><br><span class="line">    required 是否必须带有这个请求参数</span><br><span class="line">    defaultValue 不管required属性值为<span class="literal">true</span>或<span class="literal">false</span>，当value所指定的请求参数没有传输或传输的值为“”时，则使用默认值</span><br></pre></td></tr></table></figure>
-
-<br>
-
-<p><strong>@RequestHeader</strong></p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@RequestMapping(value=&quot;index&quot;)</span></span><br><span class="line"><span class="keyword">public</span> String <span class="title function_">index</span><span class="params">(</span></span><br><span class="line"><span class="params">    String username, </span></span><br><span class="line"><span class="params">    String password,</span></span><br><span class="line"><span class="params">    <span class="meta">@RequestHeader(&quot;Host&quot;)</span> String host)</span>&#123; </span><br><span class="line">    <span class="keyword">return</span> <span class="string">&quot;index&quot;</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">@RequestHeader()</span>会从请求头中取出对应的字段赋值给参数，属性：</span><br><span class="line">    required 是否必须带有这个请求参数</span><br><span class="line">    defaultValue 不管required属性值为<span class="literal">true</span>或<span class="literal">false</span>，当value所指定的请求参数没有传输或传输的值为“”时，则使用默认值</span><br></pre></td></tr></table></figure>
-
-<br>
-
-<p><strong>@CookieValue</strong></p>
-<p>与前面的使用方法一样</p>
-<br>
-
-<p><strong>通过POJO获取请求参数</strong></p>
-<p>可以在控制器方法的形参位置设置一个实体类类型的形参，此时若浏览器传输的请求参数的参数名和实体类中的属性名一致，那么请求参数就会为此属性赋值</p>
-<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">form</span> <span class="attr">th:action</span>=<span class="string">&quot;@&#123;/test&#125;&quot;</span> <span class="attr">method</span>=<span class="string">&quot;post&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">&quot;text&quot;</span> <span class="attr">name</span>=<span class="string">&quot;username&quot;</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">&quot;password&quot;</span> <span class="attr">name</span>=<span class="string">&quot;password&quot;</span>/&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">form</span>&gt;</span></span><br></pre></td></tr></table></figure>
-
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">User</span>&#123;</span><br><span class="line">    <span class="keyword">public</span> String username;</span><br><span class="line">    <span class="keyword">public</span> String password;</span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="meta">@RequestMapping(&quot;index&quot;)</span></span><br><span class="line"><span class="keyword">public</span> String <span class="title function_">index</span><span class="params">(User user)</span>&#123; </span><br><span class="line">    System.out.println(user.getUsername() + user.getPassword);</span><br><span class="line">    <span class="keyword">return</span> <span class="string">&quot;index&quot;</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<br>
-
-<p><strong>解决中文乱码问题</strong></p>
-<p>在web.xml文件中添加字符编码过滤器</p>
-<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="comment">&lt;!-- 字符编码过滤器 --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">filter</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">filter-name</span>&gt;</span>CharacterEncodingFilter<span class="tag">&lt;/<span class="name">filter-name</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">filter-class</span>&gt;</span>org.springframework.web.filter.CharacterEncodingFilter<span class="tag">&lt;/<span class="name">filter-class</span>&gt;</span></span><br><span class="line">  <span class="comment">&lt;!-- 设置请求编码 --&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">init-param</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">param-name</span>&gt;</span>encoding<span class="tag">&lt;/<span class="name">param-name</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">param-value</span>&gt;</span>UTF-8<span class="tag">&lt;/<span class="name">param-value</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">init-param</span>&gt;</span></span><br><span class="line">  <span class="comment">&lt;!-- 设置响应编码 --&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">init-param</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">param-name</span>&gt;</span>forceResponseEncoding<span class="tag">&lt;/<span class="name">param-name</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">param-value</span>&gt;</span>true<span class="tag">&lt;/<span class="name">param-value</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">init-param</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">filter</span>&gt;</span></span><br><span class="line"><span class="comment">&lt;!-- 设置字符编码过滤器的过滤路径 --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">filter-mapping</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">filter-name</span>&gt;</span>CharacterEncodingFilter<span class="tag">&lt;/<span class="name">filter-name</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">url-pattern</span>&gt;</span>/*<span class="tag">&lt;/<span class="name">url-pattern</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">filter-mapping</span>&gt;</span></span><br></pre></td></tr></table></figure>
-
-<br>
-
-
-
-<hr>
-<br>
-
-<h3 id="域对象共享数据"><a href="#域对象共享数据" class="headerlink" title="域对象共享数据"></a>域对象共享数据</h3><p><strong>使用servletAPI向request域对象共享数据</strong></p>
-<p>可以使用servletAPI向域对象中存放数据，但基本不使用</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@RequestMapping(&quot;index&quot;)</span></span><br><span class="line"><span class="keyword">public</span> String <span class="title function_">index</span><span class="params">(HttpServletRequest request)</span>&#123;</span><br><span class="line">    request.setAttribute(<span class="string">&quot;test&quot;</span>,<span class="string">&quot;testString&quot;</span>);</span><br><span class="line">    <span class="keyword">return</span> <span class="string">&quot;index&quot;</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<br>
-
-<p><strong>使用ModelAndView向request域对象共享数据</strong></p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@RequestMapping(&quot;index&quot;)</span></span><br><span class="line"><span class="keyword">public</span> ModelAndView <span class="title function_">index</span><span class="params">()</span>&#123;</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">        * ModelAndView有Model和View的功能</span></span><br><span class="line"><span class="comment">        * Model主要用于向请求域中共享数据</span></span><br><span class="line"><span class="comment">        * View主要用于设置视图，实现页面跳转</span></span><br><span class="line"><span class="comment">        */</span></span><br><span class="line">    <span class="type">ModelAndView</span> <span class="variable">mv</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">ModelAndView</span>();</span><br><span class="line">    <span class="comment">//向请求域中共享数据</span></span><br><span class="line">    mv.addObject(<span class="string">&quot;hello&quot;</span>,<span class="string">&quot;world&quot;</span>);</span><br><span class="line">    <span class="comment">//设置视图，实现页面跳转</span></span><br><span class="line">    mv.setViewName(<span class="string">&quot;index&quot;</span>);</span><br><span class="line">    <span class="keyword">return</span> mv;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<br>
-
-<p><strong>使用Model向request域对象共享数据</strong></p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@RequestMapping(&quot;index&quot;)</span></span><br><span class="line"><span class="keyword">public</span> String <span class="title function_">index</span><span class="params">(Model m)</span>&#123;</span><br><span class="line">    m.addAttribute(<span class="string">&quot;hello&quot;</span>,<span class="string">&quot;world&quot;</span>);</span><br><span class="line">    <span class="keyword">return</span> <span class="string">&quot;index&quot;</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<br>
-
-<p><strong>使用Map向request域对象共享数据</strong></p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@RequestMapping(&quot;index&quot;)</span></span><br><span class="line"><span class="keyword">public</span> String <span class="title function_">index</span><span class="params">(Map&lt;String,Object&gt; map)</span>&#123;</span><br><span class="line">    map.put(<span class="string">&quot;hello&quot;</span>,<span class="string">&quot;world&quot;</span>);</span><br><span class="line">    <span class="keyword">return</span> <span class="string">&quot;index&quot;</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<br>
-
-<p><strong>使用ModelMap向request域对象共享数据</strong></p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@RequestMapping(&quot;index&quot;)</span></span><br><span class="line"><span class="keyword">public</span> String <span class="title function_">index</span><span class="params">(ModelMap mm)</span>&#123;</span><br><span class="line">    mm.addAttribute(<span class="string">&quot;hello&quot;</span>,<span class="string">&quot;world&quot;</span>);</span><br><span class="line">    <span class="keyword">return</span> <span class="string">&quot;index&quot;</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<br>
-
-<p><strong>向session域中共享数据</strong></p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@RequestMapping(&quot;index&quot;)</span></span><br><span class="line"><span class="keyword">public</span> String <span class="title function_">index</span><span class="params">(HttpSession session)</span>&#123;</span><br><span class="line">    session.setAttribute(<span class="string">&quot;hello&quot;</span>,<span class="string">&quot;world&quot;</span>);</span><br><span class="line">    <span class="keyword">return</span> <span class="string">&quot;index&quot;</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<br>
-
-<p><strong>向application域共享数据</strong></p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@RequestMapping(&quot;index&quot;)</span></span><br><span class="line"><span class="keyword">public</span> String <span class="title function_">index</span><span class="params">(HttpSession session)</span>&#123;</span><br><span class="line">    <span class="type">ServletContext</span> <span class="variable">application</span> <span class="operator">=</span> session.getServletContext();</span><br><span class="line">    application.setAttribute(<span class="string">&quot;hello&quot;</span>,<span class="string">&quot;world&quot;</span>);</span><br><span class="line">    <span class="keyword">return</span> <span class="string">&quot;index&quot;</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<br>
-
-<hr>
-<br>
-
-<h2 id="SpringMVC的视图"><a href="#SpringMVC的视图" class="headerlink" title="SpringMVC的视图"></a>SpringMVC的视图</h2><br>
-
-<h3 id="自定义视图解析器"><a href="#自定义视图解析器" class="headerlink" title="自定义视图解析器"></a>自定义视图解析器</h3><p>当控制器方法中设置的视图名没有任何前缀时，此时的视图名称会被SpringMVC配置文件中所配置的视图解析器解析，视图名称拼接视图前缀和视图后缀所得到的最终路径，会通过转发的方式实现跳转</p>
-<br>
-
-<h3 id="转发视图"><a href="#转发视图" class="headerlink" title="转发视图"></a>转发视图</h3><p>SpringMVC中默认的转发视图是InternalResourceView</p>
-<p>创建转发视图的情况：</p>
-<p>当控制器方法中所设置的视图名称以 “forward:” 为前缀时，<strong>创建InternalResourceView视图</strong>，此时的视图名称不会被SpringMVC配置文件中所配置的视图解析器解析，而是会将前缀 “forward:” 去掉，剩余部分作为最终路径通过转发的方式实现跳转<strong>（只能跳转@RequestMapping映射过的视图）</strong></p>
-<p>例如 “forward:&#x2F;“，”forward:&#x2F;employee”</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@RequestMapping(&quot;index&quot;)</span></span><br><span class="line"><span class="keyword">public</span> String <span class="title function_">index</span><span class="params">()</span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="string">&quot;forward:/index&quot;</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<br>
-
-<h3 id="重定向视图"><a href="#重定向视图" class="headerlink" title="重定向视图"></a>重定向视图</h3><p>SpringMVC中默认的重定向视图是RedirectView</p>
-<p>当控制器方法中所设置的视图名称以 “redirect:” 为前缀时，<strong>创建RedirectView视图</strong>，此时的视图名称不会被SpringMVC配置文件中所配置的视图解析器解析，而是会将前缀 “redirect:” 去掉，剩余部分作为最终路径通过重定向的方式实现跳转<strong>（只能跳转@RequestMapping映射过的视图）</strong></p>
-<p>例如 “redirect:&#x2F;“，”redirect:&#x2F;employee”</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@RequestMapping(&quot;index&quot;)</span></span><br><span class="line"><span class="keyword">public</span> String <span class="title function_">index</span><span class="params">()</span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="string">&quot;redirect:/index&quot;</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<br>
-
-<h3 id="视图控制器-view-controller"><a href="#视图控制器-view-controller" class="headerlink" title="视图控制器 view-controller"></a>视图控制器 view-controller</h3><p><em>当控制器方法中，<strong>仅仅用来实现页面跳转（即不做任何其他的操作，只是页面跳转）</strong>，即只需要设置视图名称时，可以将处理器方法使用view-controller标签进行表示</em></p>
-<blockquote>
-<p>使用场景：</p>
-<p>spring文档里建议并将其做为最佳实践将所有的jsp页面放到WEB-INF下，不让直接访问，那么我们只能通过controller来访问jsp页面了，但是我们总不能为每个页面都写一个controller吧，那样太麻烦了，所以mvc:view-controller就是处理这个场景的一个shortcut（快捷方式）。</p>
-</blockquote>
-<p><img src="https://jjw-beiqi.github.io/2022/03/20/SpringMVC/image-20220313105546745-16471406629442.png" alt="image-20220313105546745"></p>
-<br>
-
-<p>配置view-controller后所有映射都会失效</p>
-<p>原因：<strong>如果没有mvc:annotation-driven，那么所有的@Controller注解可能就没有解析</strong>，所有当有请求时候都没有匹配的处理请求类，就都去<strong>mvc:default-servlet-handler</strong>即default servlet处理了。</p>
-<br>
-
-<blockquote>
-<p><a href="https://blog.csdn.net/qq_41984887/article/details/105045936">&lt;mvc:annotation-driven &#x2F;&gt;的作用</a></p>
-<p><img src="https://jjw-beiqi.github.io/2022/03/20/SpringMVC/image-20220313105823765-16471406609571.png" alt="image-20220313105823765"></p>
-</blockquote>
-<br>
-
-<h3 id="InternalResourceViewResolver控制器"><a href="#InternalResourceViewResolver控制器" class="headerlink" title="InternalResourceViewResolver控制器"></a>InternalResourceViewResolver控制器</h3><p>springMCV.xml</p>
-<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">bean</span> <span class="attr">class</span>=<span class="string">&quot;org.springframework.web.servlet.view.InternalResourceViewResolver&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;prefix&quot;</span> <span class="attr">value</span>=<span class="string">&quot;/WEB-INF/templates/&quot;</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;suffix&quot;</span> <span class="attr">value</span>=<span class="string">&quot;.jsp&quot;</span>/&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">bean</span>&gt;</span></span><br></pre></td></tr></table></figure>
-
-<br>
-
-<hr>
-<br>
-
-<h2 id="RESTFul简介"><a href="#RESTFul简介" class="headerlink" title="RESTFul简介"></a>RESTFul简介</h2><blockquote>
-<p> REST全称是Representational State Transfer，中文意思是表述（编者注：通常译为表征）性状态转移。 它首次出现在2000年Roy Fielding的博士论文中，Roy Fielding是HTTP规范的主要编写者之一。 他在论文中提到：”我这篇文章的写作目的，就是想在符合架构原理的前提下，理解和评估以网络为基础的应用软件的架构设计，得到一个功能强、性能好、适宜通信的架构。REST指的是一组架构约束条件和原则。” 如果一个架构符合REST的约束条件和原则，我们就称它为RESTful架构。</p>
-<p> REST本身并没有创造新的技术、组件或服务，而隐藏在RESTful背后的理念就是使用Web的现有特征和能力， 更好地使用现有Web标准中的一些准则和约束。虽然REST本身受Web技术的影响很深， 但是理论上REST架构风格并不是绑定在HTTP上，只不过目前HTTP是唯一与REST相关的实例。</p>
-</blockquote>
-<p>参考：<a href="https://www.runoob.com/w3cnote/restful-architecture.html">菜鸟教程</a></p>
-<br>
-
-<h3 id="RESTFul的实现"><a href="#RESTFul的实现" class="headerlink" title="RESTFul的实现"></a>RESTFul的实现</h3><p>具体来说就是HTTP协议里的四个表示操作方式的动词：GET、POST、PUT、DELETE</p>
-<ul>
-<li>GET：用于获取资源</li>
-<li>POST：用于新建资源</li>
-<li>PUT：用于更新资源</li>
-<li>DELETE：用于删除资源</li>
-</ul>
-<br>
-
-<p>REST风格提倡URL地址使用统一的风格设计，从前到后各个单词使用斜杠分开，不使用问号键值对方式携带请求参数，而是将要发送给服务器的数据作为URL地址的一部分，以保证整体风格的一致性</p>
-<table>
-<thead>
-<tr>
-<th>操作</th>
-<th>传统方式</th>
-<th>REST风格</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>查询</td>
-<td>getUserById?id&#x3D;1</td>
-<td>user&#x2F;1——&gt;GET</td>
-</tr>
-<tr>
-<td>保存</td>
-<td>saveUser</td>
-<td>user——&gt;POST</td>
-</tr>
-<tr>
-<td>删除</td>
-<td>deleteUser?id&#x3D;1</td>
-<td>user&#x2F;1——&gt;DELETE</td>
-</tr>
-<tr>
-<td>更新</td>
-<td>updateUser</td>
-<td>user——&gt;PUT</td>
-</tr>
-</tbody></table>
-<br>
-
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@RequestMapping(value=&quot;/user/&#123;id&#125;&quot;, method=RequestMethod.GET)</span></span><br><span class="line"><span class="keyword">public</span> String <span class="title function_">getUserById</span><span class="params">()</span>&#123;</span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">@RequestMapping(value=&quot;/user&quot;, method=RequestMethod.POST)</span></span><br><span class="line"><span class="keyword">public</span> String <span class="title function_">saveUser</span><span class="params">(String username,String password)</span>&#123;</span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">@RequestMapping(value=&quot;/user/&#123;id&#125;&quot;, method=RequestMethod.DELETE)</span></span><br><span class="line"><span class="keyword">public</span> String <span class="title function_">deleteUser</span><span class="params">()</span>&#123;</span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">@RequestMapping(value=&quot;/user&quot;, method=RequestMethod.PUT)</span></span><br><span class="line"><span class="keyword">public</span> String <span class="title function_">updateUser</span><span class="params">(String username,String password)</span>&#123;</span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<br>
-
-<h3 id="PUT、DELETE请求方式存在浏览器兼容问题"><a href="#PUT、DELETE请求方式存在浏览器兼容问题" class="headerlink" title="PUT、DELETE请求方式存在浏览器兼容问题"></a>PUT、DELETE请求方式存在浏览器兼容问题</h3><blockquote>
-<p>浏览器确实支持PUT和DELETE，但是HTML不支持。</p>
-<p>这是因为HTML 4.01和最终的W3C HTML 5.0规范都说它们的form元素应允许的唯一HTTP方法是GET和POST。</p>
-<p>在HTML 5的开发过程中对此进行了很多讨论，有一次他们将它们添加到HTML 5中，然后再次删除。之所以从HTML5规范中删除其他方法，是因为HTML 4级浏览器永远无法支持它们(在制作时不属于HTML)。</p>
-</blockquote>
-<br>
-
-<p>解决：在web.xml文件中配置HiddenHttpMethodFilter过滤器</p>
-<p><em><strong>注：同时编码过滤器必须放在HiddenHttpMethodFilter过滤器之前</strong></em></p>
-<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="comment">&lt;!-- 配置HiddenHttpMethodFilter过滤器 --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">filter</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">filter-name</span>&gt;</span>HiddenHttpMethodFilter<span class="tag">&lt;/<span class="name">filter-name</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">filter-class</span>&gt;</span>org.springframework.web.filter.HiddenHttpMethodFilter<span class="tag">&lt;/<span class="name">filter-class</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">filter</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">filter-mapping</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">filter-name</span>&gt;</span>HiddenHttpMethodFilter<span class="tag">&lt;/<span class="name">filter-name</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">url-pattern</span>&gt;</span>/*<span class="tag">&lt;/<span class="name">url-pattern</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">filter-mapping</span>&gt;</span></span><br></pre></td></tr></table></figure>
-
-<br>
-
-<ul>
-<li><p>PUT请求表单提交代码</p>
-<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="comment">&lt;!-- 显式请求方式为post请求方式 --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">form</span> <span class="attr">th:action</span>=<span class="string">&quot;@&#123;/user&#125;&quot;</span> <span class="attr">method</span>=<span class="string">&quot;post&quot;</span>&gt;</span></span><br><span class="line">    <span class="comment">&lt;!-- 添加一个隐藏域用于更改请求方式 --&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">&quot;hidden&quot;</span> <span class="attr">name</span>=<span class="string">&quot;_method&quot;</span> <span class="attr">value</span>=<span class="string">&quot;PUT&quot;</span>&gt;</span></span><br><span class="line">    用户名：<span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">&quot;text&quot;</span> <span class="attr">name</span>=<span class="string">&quot;username&quot;</span>&gt;</span></span><br><span class="line">    密码：<span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">&quot;password&quot;</span> <span class="attr">name</span>=<span class="string">&quot;password&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">&quot;submit&quot;</span> <span class="attr">value</span>=<span class="string">&quot;更改&quot;</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">form</span>&gt;</span></span><br></pre></td></tr></table></figure>
-
-<br>
-</li>
-<li><p>由于DELETE请求通常使用超链接、按钮形式，所以使用js代码将超链接、按钮与隐藏域绑定</p>
-<p>更改DELETE请求参考：<a href="https://blog.csdn.net/zzz841318172/article/details/109614543">如何将超链接GET请求变成DELETE请求</a></p>
-</li>
-</ul>
-<br>
-
-<br>
-
-<p>扩展问题：DispatcherServlet是访问不到静态资源的，当DispatcherServlet访问不到时，应该让Tomcat配置的DefaultServlet去访问静态资源，因此需要配置<strong>mvc:default-servlet-handler</strong>标签，由于配置<strong>mvc:default-servlet-handler</strong>标签后也会导致映射路径失效，所以也需要配置<strong>mvc:annotation-driven</strong>标签</p>
-<blockquote>
-<p>如果配置了DispatcherServlet，那么所有的请求都会被拦截,包括静态资源。</p>
-<ul>
-<li>‘&#x2F;‘ 将会替换掉容器的default servlet, 将会处理所有其他handler(Servlet)都不处理的访问请求.</li>
-<li>如果web.xml没有配置其他特殊路径的servlet, 基本上所有的请求都交由DispatcherServlet处理.</li>
-<li>将不会再访问容器中原始默认的servlet(你对静态资源的访问就是通过容器默认servlet处理的)，故而静态资源将不可访问！</li>
-</ul>
-</blockquote>
-<br>
-
-<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="comment">&lt;!-- 开放静态资源访问 --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">mvc:default-servlet-handler</span>/&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">mvc:annotation-driven</span>/&gt;</span></span><br></pre></td></tr></table></figure>
-
-<br>
-
-<br>
-
-<p><font color="orange"><strong>刨根问底一下 为什么加入两个注解就没有问题了呢？</strong></font></p>
-<blockquote>
-<p>首先是两个注解都不加，此时HandlerMappings中的<strong>AnnotationHandlerMapping</strong>中<strong>存储这Controller和url的映射关系</strong>，由于我们<strong>没有编写Controller去处理js html等静态资源</strong>，所以此时的状态是动态资源可以访问，静态资源不可访问。</p>
-<img src="https://jjw-beiqi.github.io/2022/03/20/SpringMVC/1263112-20190406160521291-2027530586.png" alt="img" style="zoom:50%;">
-
-<p>其次是<strong>只加上default-servlet-handler，发现处理Controller的AnnotationHandler不见了</strong>，取而代之的是SimpleURLHandlerMapping，该Handler种的handlerMap非常简单只有一个&#x2F;** <strong>即无论什么请求都直接去当前webapp下去找。这样配置静态资源肯定是可以访问的</strong>，因为它的作用和不使用SpringMVC中的DIsplacedServlet直接使用Tomcat一样。但由于AnnotationHandler的缺失，导致Controller这种基于注解配置处理请求的方法无法访问，所以这种配置下的状态是<strong>静态资源可以访问，动态资源不可以访问。</strong></p>
-<img src="https://jjw-beiqi.github.io/2022/03/20/SpringMVC/1263112-20190406160807464-126528350.png" alt="img" style="zoom:50%;">
-
-<p><strong>最后当把两个注解都加上的时候，不仅有处理静态资源的SimpleUrlHandlerMapping，还多了一个优先级最高的RequestMapping</strong>，点开详情信息发现我们配置的Controller都在里面。这就是我们要的效果：</p>
-<p><font color="red"><strong>对于每一个非jsp请求都会被DispatchServlet拦下，然后交给优先级最高的RequestMapping处理。RequestMapping遍历自己的Mappings，如果这个请求是一个动态请求，那么一定可以找到对应的Controller，Controller处理并返回；如果该请求是一个针对静态资源文件的，RequestMapping无能为力，他会按照优先级交给后续HandlerMapping如没啥用的BeanNameUrlHandlerMapping，以及放在最后用来兜底的SimpleUrlHandlerMapping，当SimpleUrlHandlerMapping拿到一个针对静态资源的请求后，会在&#x2F;**目录下找到静态资源并返回。</strong></font></p>
-<img src="https://jjw-beiqi.github.io/2022/03/20/SpringMVC/1263112-20190406161147379-857785000.png" alt="img" style="zoom: 67%;">
-
-
-
-<p><a href="https://www.cnblogs.com/AshOfTime/p/10655014.html">转载自原创博主</a></p>
-</blockquote>
-<hr>
-<br>
-
-<h2 id="HttpMessageConverter"><a href="#HttpMessageConverter" class="headerlink" title="HttpMessageConverter"></a>HttpMessageConverter</h2>]]></content>
-      <categories>
-        <category>数据结构</category>
-      </categories>
-      <tags>
-        <tag>SpringMVC</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>singleton</title>
-    <url>/2022/03/21/singleton/</url>
-    <content><![CDATA[<h1 id="单例模式"><a href="#单例模式" class="headerlink" title="单例模式"></a>单例模式</h1><blockquote>
-<p>单例模式（Singleton Pattern）是 Java 中最简单的设计模式之一。这种类型的设计模式属于创建型模式，它提供了一种创建对象的最佳方式。</p>
-<p>这种模式涉及到一个单一的类，该类负责创建自己的对象，同时确保只有单个对象被创建。这个类提供了一种访问其唯一的对象的方式，可以直接访问，不需要实例化该类的对象。</p>
-</blockquote>
-<p><strong>注意：</strong></p>
-<ul>
-<li>1、单例类只能有一个实例。</li>
-<li>2、单例类必须自己创建自己的唯一实例。</li>
-<li>3、单例类必须给所有其他对象提供这一实例。</li>
-</ul>
-<br>
-
-<p><strong>优点：</strong></p>
-<ul>
-<li>1、在内存里只有一个实例，减少了内存的开销，尤其是频繁的创建和销毁实例（比如管理学院首页页面缓存）。</li>
-<li>2、避免对资源的多重占用（比如写文件操作）。</li>
-</ul>
-<br>
-
-<p><strong>缺点：</strong></p>
-<p>没有接口，不能继承，与单一职责原则冲突，一个类应该只关心内部逻辑，而不关心外面怎么样来实例化。</p>
-<br>
-
-<p><strong>使用场景：</strong></p>
-<ul>
-<li>1、要求生产唯一序列号。</li>
-<li>2、WEB 中的计数器，不用每次刷新都在数据库里加一次，用单例先缓存起来。</li>
-<li>3、创建的一个对象需要消耗的资源过多，比如 I&#x2F;O 与数据库的连接等。</li>
-</ul>
-<br>
-
-<hr>
-<h1 id="单例模式的几种实现方式"><a href="#单例模式的几种实现方式" class="headerlink" title="单例模式的几种实现方式"></a>单例模式的几种实现方式</h1><br>
-
-<h2 id="饿汉模式"><a href="#饿汉模式" class="headerlink" title="饿汉模式"></a>饿汉模式</h2><blockquote>
-<p>描述：基于 classloader 机制避免了多线程的同步问题，不过，instance 在类装载时就实例化，虽然导致类装载的原因有很多种，在单例模式中大多数都是调用 getInstance 方法， 但是也不能确定有其他的方式（或者其他的静态方法）导致类装载，这时候初始化 instance 显然没有达到 lazy loading 的效果。</p>
-</blockquote>
-<p>如果后续并没有使用到，可能会造成浪费空间</p>
-<p>线程安全问题与登记式是一样的</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Hungry</span> &#123;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">private</span> <span class="title function_">Hungry</span><span class="params">()</span>&#123;&#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> <span class="keyword">static</span> <span class="type">Hungry</span> <span class="variable">HUNGRY</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Hungry</span>();</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> Hungry <span class="title function_">getInstance</span><span class="params">()</span>&#123;</span><br><span class="line">        <span class="keyword">return</span> HUNGRY;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<br>
-
-<hr>
-<br>
-
-<h2 id="登记式"><a href="#登记式" class="headerlink" title="登记式"></a>登记式</h2><blockquote>
-<p>这种方式能达到双检锁方式一样的功效，但实现更简单。对静态域使用延迟初始化，应使用这种方式而不是双检锁方式。这种方式只适用于静态域的情况，双检锁方式可在实例域需要延迟初始化时使用。</p>
-<p>描述：它跟饿汉式不同的是：饿汉式只要 Singleton 类被装载了，那么 instance 就会被实例化（没有达到 lazy loading 效果），而这种方式是 <strong>Holder类被装载了，instance 不一定被初始化。因为 SingletonHolder 类没有被主动使用，只有通过显式调用 getInstance 方法时，才会显式装载 SingletonHolder 类，从而实例化 instance。</strong></p>
-</blockquote>
-<br>
-
-<p><strong>但没有同步锁是如何保证线程安全的呢？</strong></p>
-<p>jvm在加载Holder时不会连SingletonHolder一同加载（ lazy loading ），这里涉及到<strong>类的加载时机</strong></p>
-<blockquote>
-<ol>
-<li>遇到 new 、getstatic 、putstatic 或 invokestatic 这4条字节码指令时，如果类没有进行过初始化，则需要先触发其初始化 。生成这4条指令的最常见的Java代码场景是：使用new关键字实例化对象的时候、读取或设置一个类的静态字段（被final修饰、已在编译期把结果放入常量池的静态字段除外）的时候，以及凋用一个类的静态方法的时候。</li>
-<li>使用 java-lang 、 reflect 包的方法对类进行反射调用的时候，如果类没有进行过初始化，则需要先触发其初始化 。</li>
-<li>当初始化一个类的时候，如果发现其父类还没有进行过初始化，则需要先触发其父类的初始化 。</li>
-<li>当虚拟机启动时，用户需要指定一个要执行的主类（包含 main() 方法的那个类），虚拟机会先初始化这个主类。</li>
-<li>当使用 JDK 1.7 的动态语言支持时，如果一个 java.lang.invokeMethodHandle 实例最后的解析结果 REF-getStatic 、 REF_putStatic 、 REF invokeStatic 的方法句柄，并且这个方法句柄所对应的类没有进行过初始化，则需要先触发其初始化</li>
-</ol>
-</blockquote>
-<br>
-
-<p><strong>外部调用getInstance()方法后，会触发SingletonHolder的加载，任意一个线程获取该【类加载】的锁后，就能保SingletonHolder首次给new出来，只有一个线程进入该内部类。加载完成后，static成员变量是唯一的。</strong></p>
-<br>
-
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Holder</span> &#123;</span><br><span class="line">    </span><br><span class="line">     <span class="keyword">private</span> <span class="title function_">Holder</span> <span class="params">()</span>&#123;&#125;  </span><br><span class="line">    </span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">class</span> <span class="title class_">SingletonHolder</span> &#123;  </span><br><span class="line">    	<span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="type">Holder</span> <span class="variable">holder</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Holder</span>();  </span><br><span class="line">    &#125;  </span><br><span class="line">    </span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> Holder <span class="title function_">getInstance</span><span class="params">()</span> &#123;  </span><br><span class="line">        <span class="keyword">return</span> SingletonHolder.holder;  </span><br><span class="line">    &#125;  </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<br>
-
-<hr>
-<br>
-
-<h2 id="懒汉模式"><a href="#懒汉模式" class="headerlink" title="懒汉模式"></a>懒汉模式</h2><p>当使用到的时候才去加载这个类，避免了空间的浪费</p>
-<p>这种方式是最基本的实现方式，这种实现最大的问题就是不支持多线程。因为没有加锁 synchronized，所以严格意义上它并不算单例模式。</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Lazy</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="title function_">Lazy</span><span class="params">()</span>&#123;&#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> Lazy lazy;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> Lazy <span class="title function_">getInstance</span><span class="params">()</span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (lazy == <span class="literal">null</span>)&#123;</span><br><span class="line">            lazy = <span class="keyword">new</span> <span class="title class_">Lazy</span>();</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> lazy;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<br>
-
-<p>上述实现存在一个明显的问题，就是在多线程的情况下不能保证只返回了一个实例，因为getInstance()方法没有加同步锁，可能会造成线程安全的问题</p>
-<p>因此我们需要在getInstance()方法上加上同步锁</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Lazy</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="title function_">Lazy</span><span class="params">()</span>&#123;&#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> Lazy lazy;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">synchronized</span> Lazy <span class="title function_">getInstance</span><span class="params">()</span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (lazy == <span class="literal">null</span>)&#123;</span><br><span class="line">            lazy = <span class="keyword">new</span> <span class="title class_">Lazy</span>();</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> lazy;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<br>
-
-<p>在给getInstance()方法加上同步锁之后，这个方法变成线程安全的了，也不会有产生多个实例的情况了。</p>
-<p>但是这样做的话我们发现每一次判断lazy实例是否存在的时候就要去拿到同步锁，而判断与线程安全是无关的，因此在方法上加同步锁会大大降低性能。因此我们采取<strong>双重锁校验模式</strong>，将同步代码块放在方法中，每次先判断实例是否存在，如果存在就直接返回实例；不存在再去拿同步锁进行初始化，这样可以减少线程上下文的切换，提升性能</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Lazy</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="title function_">Lazy</span><span class="params">()</span>&#123;&#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> Lazy lazy;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> Lazy <span class="title function_">getInstance</span><span class="params">()</span>&#123;</span><br><span class="line">            <span class="keyword">if</span> (lazy == <span class="literal">null</span>) &#123;  </span><br><span class="line">            <span class="keyword">synchronized</span> (Lazy.class) &#123;  </span><br><span class="line">                <span class="keyword">if</span> (lazy == <span class="literal">null</span>) &#123;  </span><br><span class="line">                    lazy = <span class="keyword">new</span> <span class="title class_">Lazy</span>();  </span><br><span class="line">                &#125;  </span><br><span class="line">            &#125;  </span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> lazy;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<br>
-
-<p>上述实现代码，似乎很完美的解决了线程安全问题和性能的问题，但它仍然是线程不安全的。<strong>因为初始化代码的new关键字并不是原子性操作</strong></p>
-<blockquote>
-<p>new的操作步骤：</p>
-<ul>
-<li>分配内存空间</li>
-<li>执行构造方法，初始化对象</li>
-<li>把这个对象指向这个空间</li>
-</ul>
-<p>由于不是原子性操作，可能会造成指令重排的问题，例如先将这个对象指向这个空间，再去初始化对象</p>
-</blockquote>
-<p>情况：一个线程A执行代码，在new操作时发生了指令重排，导致先将对象指向分配的空间，再去初始化对象；这时线程B进入发现这个对象已经指向了一个空间，<strong>它就会认为这个对象!&#x3D;null</strong>，但实际上这个对象可能还未完成初始化对象</p>
-<p>所以由于存在这种情况，我们必须禁止指令重排，即<strong>加上volatile关键字</strong>，这样才算是完整的双重锁校验模式</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Lazy</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="title function_">Lazy</span><span class="params">()</span>&#123;&#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">volatile</span> <span class="keyword">static</span> Lazy lazy;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> Lazy <span class="title function_">getInstance</span><span class="params">()</span>&#123;</span><br><span class="line">            <span class="keyword">if</span> (lazy == <span class="literal">null</span>) &#123;  </span><br><span class="line">            <span class="keyword">synchronized</span> (Lazy.class) &#123;  </span><br><span class="line">                <span class="keyword">if</span> (lazy == <span class="literal">null</span>) &#123;  </span><br><span class="line">                    lazy = <span class="keyword">new</span> <span class="title class_">Lazy</span>();  </span><br><span class="line">                &#125;  </span><br><span class="line">            &#125;  </span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> lazy;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<br>
-
-<h3 id="反射机制破坏单例"><a href="#反射机制破坏单例" class="headerlink" title="反射机制破坏单例"></a>反射机制破坏单例</h3><h4 id="增加校验"><a href="#增加校验" class="headerlink" title="增加校验"></a>增加校验</h4><p>虽然解决了线程安全问题、性能和原子性的问题，但因为存在反射机制，可以人为的去破坏单例模式。所以仍然存在安全问题</p>
-<p>我们可以在造构造器中判断是否存在这个实例来解决问题</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Lazy</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="title function_">Lazy</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="keyword">synchronized</span> (Lazy.class)&#123;</span><br><span class="line">            <span class="comment">//当这个实例已经存在了则不能使用反射机制创建对象</span></span><br><span class="line">            <span class="keyword">if</span> (lazy!=<span class="literal">null</span>)&#123;</span><br><span class="line">                <span class="keyword">throw</span> <span class="keyword">new</span> <span class="title class_">RuntimeException</span>(<span class="string">&quot;请勿使用反射机制破坏&quot;</span>);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">volatile</span> <span class="keyword">static</span> Lazy lazy;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> Lazy <span class="title function_">getInstance</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="keyword">if</span> (lazy == <span class="literal">null</span>) &#123;</span><br><span class="line">            <span class="keyword">synchronized</span> (Lazy.class) &#123;</span><br><span class="line">                <span class="keyword">if</span> (lazy == <span class="literal">null</span>) &#123;</span><br><span class="line">                    lazy = <span class="keyword">new</span> <span class="title class_">Lazy</span>();</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> lazy;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<br>
-
-<h4 id="增加信号量"><a href="#增加信号量" class="headerlink" title="增加信号量"></a>增加信号量</h4><p>但这样也存在一点问题，反射机制创建的lazy对象与正常创建的lazy对象并不是一个对象，当第一次也是使用反射机制去创建lazy对象时，lazy!&#x3D;null是检测不出来是否存在这个单例的</p>
-<p>我们可以使用<strong>信号量的方式</strong>，这样虽然第一次可以使用反射机制获得到单例，但也只能获取到一次，某种程度上来说这也算一个单例</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Lazy</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="type">boolean</span> <span class="variable">flag</span> <span class="operator">=</span> <span class="literal">false</span>;</span><br><span class="line">    <span class="keyword">private</span> <span class="title function_">Lazy</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="keyword">synchronized</span> (Lazy.class)&#123;</span><br><span class="line">            <span class="keyword">if</span> (flag == <span class="literal">false</span>)&#123;</span><br><span class="line">                flag = <span class="literal">true</span>;</span><br><span class="line">                lazy=<span class="built_in">this</span>;</span><br><span class="line">            &#125;<span class="keyword">else</span> &#123;</span><br><span class="line">                <span class="keyword">throw</span> <span class="keyword">new</span> <span class="title class_">RuntimeException</span>(<span class="string">&quot;请勿使用反射机制破坏&quot;</span>);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">volatile</span> <span class="keyword">static</span> Lazy lazy;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> Lazy <span class="title function_">getInstance</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="keyword">if</span> (lazy == <span class="literal">null</span>) &#123;</span><br><span class="line">            <span class="keyword">synchronized</span> (Lazy.class) &#123;</span><br><span class="line">                <span class="keyword">if</span> (lazy == <span class="literal">null</span>) &#123;</span><br><span class="line">                    lazy = <span class="keyword">new</span> <span class="title class_">Lazy</span>();</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> lazy;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<br>
-
-<p>但但但是就算做到这样仍然不能防止被反射破坏，因为既然反射能获得到私有的构造器，它也能获取到私有静态变量，这样的话可以每次反射创建对象后再将信号量设置为原来的样子。但由于私有静态变量较难被反编译，因此这种方法也存在它的可用性</p>
-<blockquote>
-<p><strong>总结：懒汉式实现的单例模式是不可以防止被反射破坏的</strong></p>
-</blockquote>
-<br>
-
-<hr>
-<br>
-
-<h2 id="枚举模式"><a href="#枚举模式" class="headerlink" title="枚举模式"></a>枚举模式</h2><p>我们先来看一个枚举的单例模式的实现</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">enum</span>  <span class="title class_">EnumSingleton</span> &#123;</span><br><span class="line">    INSTANCE;</span><br><span class="line">    <span class="keyword">public</span> EnumSingleton <span class="title function_">getInstance</span><span class="params">()</span>&#123;</span><br><span class="line">        <span class="keyword">return</span> INSTANCE;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<br>
-
-<h3 id="使用无参构造器反射创建"><a href="#使用无参构造器反射创建" class="headerlink" title="使用无参构造器反射创建"></a>使用无参构造器反射创建</h3><p>当我们试图使用反射机制去创建这个枚举类时</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">Constructor&lt;EnumSingleton&gt; constructor= <span class="literal">null</span>;</span><br><span class="line">constructor = EnumSingleton.class.getDeclaredConstructor();</span><br><span class="line">constructor.setAccessible(<span class="literal">true</span>);</span><br><span class="line">EnumSingleton singleton= <span class="literal">null</span>;</span><br><span class="line">singleton = constructor.newInstance();</span><br><span class="line">System.out.println(singleton);</span><br></pre></td></tr></table></figure>
-
-<p>将会报异常：</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">Exception in thread &quot;main&quot; java.lang.NoSuchMethodException: com.lxp.pattern.singleton.EnumSingleton.&lt;init&gt;()</span><br></pre></td></tr></table></figure>
-
-<p>使用debug模式运行，会发现是因为EnumSingleton.class.getDeclaredConstructors()获取所有构造器，会发现并没有我们所设置的无参构造器，但是我们并没有在枚举类中设置其他的有参构造方法，这是怎么回事呢？查看编译后的源码，其继承了Enum类，所以会有（String.class,int.class）的构造器</p>
-<p><img src="https://jjw-beiqi.github.io/2022/03/21/singleton/image-20220321203503408.png" alt="image-20220321203503408"></p>
-<br>
-
-<h3 id="使用有参构造器反射创建"><a href="#使用有参构造器反射创建" class="headerlink" title="使用有参构造器反射创建"></a>使用有参构造器反射创建</h3><p>也许会有疑问，是不是因为自身的类没有无参构造方法才导致的异常？但执行下述代码后仍然会异常</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">Constructor&lt;EnumSingleton&gt; constructor= <span class="literal">null</span>;</span><br><span class="line">constructor = EnumSingleton.class.getDeclaredConstructor(String.class,<span class="type">int</span>.class);</span><br><span class="line">constructor.setAccessible(<span class="literal">true</span>);</span><br><span class="line">EnumSingleton singleton= <span class="literal">null</span>;</span><br><span class="line">singleton = constructor.newInstance();</span><br><span class="line">System.out.println(singleton);</span><br></pre></td></tr></table></figure>
-
-<p>抛出异常：</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">Exception in thread &quot;main&quot; java.lang.IllegalArgumentException: Cannot reflectively create enum objects</span><br></pre></td></tr></table></figure>
-
-<p><strong>Cannot reflectively create enum objects</strong> 这个异常的意思是不能使用反射机制创建枚举对象</p>
-<br>
-
-<h3 id="原因"><a href="#原因" class="headerlink" title="原因"></a>原因</h3><p>我们通过查看newInstance方法的源码发现，<strong>当对枚举类使用newInstance方法时会抛出异常</strong></p>
-<p><img src="https://jjw-beiqi.github.io/2022/03/21/singleton/image-20220321201936962.png" alt="image-20220321201936962"></p>
-<p>为了防止反射机制破坏懒汉模式，我们可以使用枚举的方式实现单例模式</p>
-<blockquote>
-<p>枚举是最好的单例模式，同时枚举模式也能保证线程安全</p>
-</blockquote>
-]]></content>
-      <categories>
-        <category>设计模式</category>
-      </categories>
-      <tags>
-        <tag>单例模式</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>Spring学习笔记</title>
     <url>/2022/03/18/Spring/</url>
     <content><![CDATA[<h1 id="Spring"><a href="#Spring" class="headerlink" title="Spring"></a>Spring</h1><h2 id="spring框架概述"><a href="#spring框架概述" class="headerlink" title="spring框架概述"></a>spring框架概述</h2><ul>
@@ -1062,10 +548,564 @@
 
 ]]></content>
       <categories>
-        <category>数据结构</category>
+        <category>spring</category>
       </categories>
       <tags>
         <tag>Spring</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>SpringMVC学习笔记</title>
+    <url>/2022/03/20/SpringMVC/</url>
+    <content><![CDATA[<h1 id="SpringMvc"><a href="#SpringMvc" class="headerlink" title="SpringMvc"></a>SpringMvc</h1><p>SpringMvc是Spring的一个后续产品，是Spring的一个子项目</p>
+<p>SpringMvc是Spring为表述层开发提供的一整套完备的解决方案</p>
+<h2 id="创建SpringMvc项目"><a href="#创建SpringMvc项目" class="headerlink" title="创建SpringMvc项目"></a>创建SpringMvc项目</h2><ol>
+<li><p>创建maven下的web项目</p>
+<p>参考：<a href="https://blog.csdn.net/weixin_42222334/article/details/80362126">https://blog.csdn.net/weixin_42222334/article/details/80362126</a></p>
+</li>
+<li><p>导入依赖</p>
+<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">     <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>javax.servlet<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">     <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>javax.servlet-api<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">     <span class="tag">&lt;<span class="name">version</span>&gt;</span>3.1.0<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">   <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line">   </span><br><span class="line">   <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">     <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">     <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-webmvc<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">     <span class="tag">&lt;<span class="name">version</span>&gt;</span>5.3.15<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">   <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line">   </span><br><span class="line">   <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">     <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>ch.qos.logback<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">     <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>logback-classic<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">     <span class="tag">&lt;<span class="name">version</span>&gt;</span>1.2.10<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">   <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>配置web.xml文件</p>
+<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="meta">&lt;!DOCTYPE <span class="keyword">web-app</span> <span class="keyword">PUBLIC</span></span></span><br><span class="line"><span class="meta"> <span class="string">&quot;-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN&quot;</span></span></span><br><span class="line"><span class="meta"> <span class="string">&quot;http://java.sun.com/dtd/web-app_2_3.dtd&quot;</span> &gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">web-app</span>&gt;</span></span><br><span class="line">  <span class="comment">&lt;!-- 配置SpringMvc的前端控制器，对浏览器发送的请求进行统一处理 --&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">servlet</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">servlet-name</span>&gt;</span>SpringMvc<span class="tag">&lt;/<span class="name">servlet-name</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">servlet-class</span>&gt;</span>org.springframework.web.servlet.DispatcherServlet<span class="tag">&lt;/<span class="name">servlet-class</span>&gt;</span></span><br><span class="line">    <span class="comment">&lt;!-- 配置SpringMvc配置文件的位置和名称 --&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">init-param</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">param-name</span>&gt;</span>contextConfigLocation<span class="tag">&lt;/<span class="name">param-name</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">param-value</span>&gt;</span>classpath:springMVC.xml<span class="tag">&lt;/<span class="name">param-value</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">init-param</span>&gt;</span></span><br><span class="line">    <span class="comment">&lt;!-- 将前端控制器DispatherServlet的初始化时间提前到服务器启动时 --&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">load-on-startup</span>&gt;</span>1<span class="tag">&lt;/<span class="name">load-on-startup</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">servlet</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">servlet-mapping</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">servlet-name</span>&gt;</span>SpringMvc<span class="tag">&lt;/<span class="name">servlet-name</span>&gt;</span></span><br><span class="line">    <span class="comment">&lt;!--</span></span><br><span class="line"><span class="comment">      设置springmvc的核心控制器所能处理的请求的请求路径</span></span><br><span class="line"><span class="comment">      /所匹配的请求可以是/login或.js...</span></span><br><span class="line"><span class="comment">      但不能匹配.jsp的请求</span></span><br><span class="line"><span class="comment">     --&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">url-pattern</span>&gt;</span>/<span class="tag">&lt;/<span class="name">url-pattern</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">servlet-mapping</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">web-app</span>&gt;</span></span><br></pre></td></tr></table></figure></li>
+</ol>
+<br>
+
+
+<hr>
+<br>
+
+<h2 id="配置springMVC-xml"><a href="#配置springMVC-xml" class="headerlink" title="配置springMVC.xml"></a>配置springMVC.xml</h2><figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="meta">&lt;?xml version=<span class="string">&quot;1.0&quot;</span> encoding=<span class="string">&quot;UTF-8&quot;</span>?&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">beans</span> <span class="attr">xmlns</span>=<span class="string">&quot;http://www.springframework.org/schema/beans&quot;</span></span></span><br><span class="line"><span class="tag">       <span class="attr">xmlns:xsi</span>=<span class="string">&quot;http://www.w3.org/2001/XMLSchema-instance&quot;</span></span></span><br><span class="line"><span class="tag">       <span class="attr">xmlns:context</span>=<span class="string">&quot;http://www.springframework.org/schema/context&quot;</span></span></span><br><span class="line"><span class="tag">       <span class="attr">xsi:schemaLocation</span>=<span class="string">&quot;http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context https://www.springframework.org/schema/context/spring-context.xsd&quot;</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">&lt;!-- 扫描组件 --&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">context:component-scan</span> <span class="attr">base-package</span>=<span class="string">&quot;com&quot;</span>/&gt;</span></span><br><span class="line">    <span class="comment">&lt;!-- 配置视图解析器，也可以选择其他的视图解析器 --&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">&quot;viewResolver&quot;</span> <span class="attr">class</span>=<span class="string">&quot;org.thymeleaf.spring5.view.ThymeleafViewResolver&quot;</span>&gt;</span></span><br><span class="line">        <span class="comment">&lt;!-- 视图解析器优先级 --&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;order&quot;</span> <span class="attr">value</span>=<span class="string">&quot;1&quot;</span>/&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;characterEncoding&quot;</span> <span class="attr">value</span>=<span class="string">&quot;UTF-8&quot;</span>/&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;templateEngine&quot;</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">bean</span> <span class="attr">class</span>=<span class="string">&quot;org.thymeleaf.spring5.SpringTemplateEngine&quot;</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;templateResolver&quot;</span>&gt;</span></span><br><span class="line">                    <span class="tag">&lt;<span class="name">bean</span> <span class="attr">class</span>=<span class="string">&quot;org.thymeleaf.spring5.templateresolver.SpringResourceTemplateResolver&quot;</span>&gt;</span></span><br><span class="line">                        <span class="comment">&lt;!-- 视图前缀 --&gt;</span></span><br><span class="line">                        <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;prefix&quot;</span> <span class="attr">value</span>=<span class="string">&quot;/WEB-INF/templates/&quot;</span>/&gt;</span></span><br><span class="line">                        <span class="comment">&lt;!-- 视图后缀 --&gt;</span></span><br><span class="line">                        <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;suffix&quot;</span> <span class="attr">value</span>=<span class="string">&quot;.html&quot;</span>/&gt;</span></span><br><span class="line">                        <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;templateMode&quot;</span> <span class="attr">value</span>=<span class="string">&quot;HTML5&quot;</span>/&gt;</span></span><br><span class="line">                        <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;characterEncoding&quot;</span> <span class="attr">value</span>=<span class="string">&quot;UTF-8&quot;</span>/&gt;</span></span><br><span class="line">                    <span class="tag">&lt;/<span class="name">bean</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;/<span class="name">bean</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">bean</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">beans</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<br>
+
+<p><strong>扩展：过滤器、拦截器、aop 顺序</strong></p>
+<p>由于SpringMVC的前端控制器是DispatherServlet所以有必要了解一下过滤器、拦截器、aop 的执行顺序</p>
+<p>filter—&gt;Interceptor—-&gt;@Aspect –&gt;Interceptor</p>
+<p><img src="https://jjw-beiqi.github.io/2022/03/20/SpringMVC/20151219102326359.png" alt="img"></p>
+<br>
+
+<hr>
+<br>
+
+<h2 id="SpringMVC的请求"><a href="#SpringMVC的请求" class="headerlink" title="SpringMVC的请求"></a>SpringMVC的请求</h2><br>
+
+<h3 id="RequestMapping"><a href="#RequestMapping" class="headerlink" title="@RequestMapping"></a>@RequestMapping</h3><p>@RequestMapping注解的作用就是将请求和处理请求的控制器方法关联起来，建立映射关系</p>
+<ul>
+<li>标识一个类：设置请求的请求路径的初始信息</li>
+<li>标识一个方法：设置映射请求请求路径的具体信息</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@Controller</span></span><br><span class="line"> <span class="meta">@RequestMapping(value=&quot;/test&quot;)</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">controller</span> &#123;</span><br><span class="line">    <span class="meta">@RequestMapping(value=&quot;index&quot;)</span></span><br><span class="line">    <span class="keyword">public</span> String <span class="title function_">index</span><span class="params">()</span>&#123;</span><br><span class="line">        <span class="comment">//返回视图名称</span></span><br><span class="line">        <span class="keyword">return</span> <span class="string">&quot;index&quot;</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//http://localhost:8080/springmvc/test/index</span></span><br></pre></td></tr></table></figure>
+
+<p>浏览器发送请求，若请求地址符合前端控制器的url-pattern，该请求就会被前端控制器DispatcherServlet处理。前端控制器会读取SpringMvc的核心配置文件，通过扫描组件会找到控制器，将请求地址和控制器中@RequestMapping注解的value属性值进行匹配，若匹配成功，该注解所标识的控制器方法就是处理请求的方法。处理请求的方法需要返回一个字符串类型的视图名称，该视图名称会被视图解析器解析，通过Thymeleaf（也可以使用其他的视图解析器）对视图进行渲染，最终转发到视图所对应页面</p>
+<br>
+
+<p><strong>@RequestMapping中的value属性</strong></p>
+<p>@RequestMapping注解的value属性是一个字符串类型的数组，表示该请求映射能够匹配多个请求地址所对应的请求</p>
+<p>@RequestMapping注解的value属性必须设置</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@RequestMapping(value=&#123;&quot;index&quot;,&quot;test&quot;&#125;)</span></span><br><span class="line">   <span class="keyword">public</span> String <span class="title function_">index</span><span class="params">()</span>&#123;</span><br><span class="line">       <span class="comment">//返回视图名称</span></span><br><span class="line">       <span class="keyword">return</span> <span class="string">&quot;index&quot;</span>;</span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure>
+
+<br>
+
+<p><strong>@RequestMapping中的method属性</strong></p>
+<p>@RequestMapping中的method属性通过请求的请求方式（get&#x2F;post匹配请求映射）</p>
+<p>@RequestMapping中的method属性是一个RequestMethod类型的数组，表示该请求映射能够匹配多种请求方式的请求</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@RequestMapping(value=&quot;index&quot;,method=RequestMethod.GET)</span></span><br><span class="line">   <span class="keyword">public</span> String <span class="title function_">index</span><span class="params">()</span>&#123;</span><br><span class="line">       <span class="comment">//返回视图名称</span></span><br><span class="line">       <span class="keyword">return</span> <span class="string">&quot;index&quot;</span>;</span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure>
+
+<br>
+
+<p><strong>@RequestMapping的派生注解</strong></p>
+<ul>
+<li><p>@GetMapping</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">//等同于@RequestMapping(method=RequestMethod.GET)</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>@PostMapping</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">//等同于@RequestMapping(method=RequestMethod.POST)</span></span><br></pre></td></tr></table></figure>
+
+<p>…</p>
+</li>
+</ul>
+<br>
+
+<p><strong>@RequestMapping中的params属性</strong></p>
+<p>@RequestMapping中的params属性通过请求的请求参数匹配请求映射</p>
+<p>@RequestMapping中的params属性是一个字符串的数组，可以通过四种表达式设置请求参数和请求映射的匹配关系</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&quot;param&quot;:要求请求映射所匹配的请求必须携带param请求参数</span><br><span class="line">&quot;param&quot;:要求请求映射所匹配的请求必须不能携带param请求参数</span><br><span class="line">&quot;param=value&quot;:要求请求映射所匹配的请求必须携带param请求参数且param=value&quot;</span><br><span class="line">param!=value&quot;:要求请求映射所匹配的请求必须携带param请求参数但是param!=value</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@RequestMapping(value=&quot;index&quot;,param=&#123;&quot;usename&quot;,&quot;!abc&quot;&#125;)</span></span><br><span class="line">   <span class="keyword">public</span> String <span class="title function_">index</span><span class="params">()</span>&#123;</span><br><span class="line">       <span class="comment">//返回视图名称</span></span><br><span class="line">       <span class="keyword">return</span> <span class="string">&quot;index&quot;</span>;</span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure>
+
+<br>
+
+<p><strong>SpringMVC支持ant风格的路径</strong></p>
+<p>？：表示任意的单个字符</p>
+<p>*：表示任意的0个或多个字符</p>
+<p>**：表示任意的一层或多层目录</p>
+<br>
+
+<hr>
+<br>
+
+<h3 id="SpringMVC获取请求参数"><a href="#SpringMVC获取请求参数" class="headerlink" title="SpringMVC获取请求参数"></a>SpringMVC获取请求参数</h3><p>可以使用servletAPI获取参数，但基本不使用</p>
+<p>当发送的参数名与@RequestMapping标识方法中参数名一致时，会自动匹配</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@RequestMapping(value=&quot;index&quot;)</span></span><br><span class="line"><span class="keyword">public</span> String <span class="title function_">index</span><span class="params">(String username, String password)</span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="string">&quot;index&quot;</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<br>
+
+<p><strong>当有多个请求参数名一样时，如： …?hobby&#x3D;a&amp;hobby&#x3D;b</strong></p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">//可以这么写</span></span><br><span class="line"><span class="meta">@RequestMapping(value=&quot;index&quot;)</span></span><br><span class="line"><span class="keyword">public</span> String <span class="title function_">index</span><span class="params">(String hobby)</span>&#123; <span class="comment">//hobby=&quot;a,b&quot;</span></span><br><span class="line">    <span class="keyword">return</span> <span class="string">&quot;index&quot;</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//或</span></span><br><span class="line"><span class="meta">@RequestMapping(value=&quot;index&quot;)</span></span><br><span class="line"><span class="keyword">public</span> String <span class="title function_">index</span><span class="params">(String[] hobby)</span>&#123; <span class="comment">//hobby=[a,b]</span></span><br><span class="line">    <span class="keyword">return</span> <span class="string">&quot;index&quot;</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<br>
+
+<p><strong>@RequestParam()</strong></p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">//当请求参数名和方法参数名不一致时，使用@RequestParam()</span></span><br><span class="line"><span class="meta">@RequestMapping(value=&quot;index&quot;)</span></span><br><span class="line"><span class="keyword">public</span> String <span class="title function_">index</span><span class="params">(</span></span><br><span class="line"><span class="params">    <span class="meta">@RequestParam(&quot;user_name&quot;)</span> String username, </span></span><br><span class="line"><span class="params">    String password)</span>&#123; </span><br><span class="line">    <span class="keyword">return</span> <span class="string">&quot;index&quot;</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">@RequestParam()</span>将请求参数和方法参数映射起来，属性：</span><br><span class="line">    required 是否必须带有这个请求参数</span><br><span class="line">    defaultValue 不管required属性值为<span class="literal">true</span>或<span class="literal">false</span>，当value所指定的请求参数没有传输或传输的值为“”时，则使用默认值</span><br></pre></td></tr></table></figure>
+
+<br>
+
+<p><strong>@RequestHeader</strong></p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@RequestMapping(value=&quot;index&quot;)</span></span><br><span class="line"><span class="keyword">public</span> String <span class="title function_">index</span><span class="params">(</span></span><br><span class="line"><span class="params">    String username, </span></span><br><span class="line"><span class="params">    String password,</span></span><br><span class="line"><span class="params">    <span class="meta">@RequestHeader(&quot;Host&quot;)</span> String host)</span>&#123; </span><br><span class="line">    <span class="keyword">return</span> <span class="string">&quot;index&quot;</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">@RequestHeader()</span>会从请求头中取出对应的字段赋值给参数，属性：</span><br><span class="line">    required 是否必须带有这个请求参数</span><br><span class="line">    defaultValue 不管required属性值为<span class="literal">true</span>或<span class="literal">false</span>，当value所指定的请求参数没有传输或传输的值为“”时，则使用默认值</span><br></pre></td></tr></table></figure>
+
+<br>
+
+<p><strong>@CookieValue</strong></p>
+<p>与前面的使用方法一样</p>
+<br>
+
+<p><strong>通过POJO获取请求参数</strong></p>
+<p>可以在控制器方法的形参位置设置一个实体类类型的形参，此时若浏览器传输的请求参数的参数名和实体类中的属性名一致，那么请求参数就会为此属性赋值</p>
+<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">form</span> <span class="attr">th:action</span>=<span class="string">&quot;@&#123;/test&#125;&quot;</span> <span class="attr">method</span>=<span class="string">&quot;post&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">&quot;text&quot;</span> <span class="attr">name</span>=<span class="string">&quot;username&quot;</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">&quot;password&quot;</span> <span class="attr">name</span>=<span class="string">&quot;password&quot;</span>/&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">form</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">User</span>&#123;</span><br><span class="line">    <span class="keyword">public</span> String username;</span><br><span class="line">    <span class="keyword">public</span> String password;</span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="meta">@RequestMapping(&quot;index&quot;)</span></span><br><span class="line"><span class="keyword">public</span> String <span class="title function_">index</span><span class="params">(User user)</span>&#123; </span><br><span class="line">    System.out.println(user.getUsername() + user.getPassword);</span><br><span class="line">    <span class="keyword">return</span> <span class="string">&quot;index&quot;</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<br>
+
+<p><strong>解决中文乱码问题</strong></p>
+<p>在web.xml文件中添加字符编码过滤器</p>
+<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="comment">&lt;!-- 字符编码过滤器 --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">filter</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">filter-name</span>&gt;</span>CharacterEncodingFilter<span class="tag">&lt;/<span class="name">filter-name</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">filter-class</span>&gt;</span>org.springframework.web.filter.CharacterEncodingFilter<span class="tag">&lt;/<span class="name">filter-class</span>&gt;</span></span><br><span class="line">  <span class="comment">&lt;!-- 设置请求编码 --&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">init-param</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">param-name</span>&gt;</span>encoding<span class="tag">&lt;/<span class="name">param-name</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">param-value</span>&gt;</span>UTF-8<span class="tag">&lt;/<span class="name">param-value</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">init-param</span>&gt;</span></span><br><span class="line">  <span class="comment">&lt;!-- 设置响应编码 --&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">init-param</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">param-name</span>&gt;</span>forceResponseEncoding<span class="tag">&lt;/<span class="name">param-name</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">param-value</span>&gt;</span>true<span class="tag">&lt;/<span class="name">param-value</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">init-param</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">filter</span>&gt;</span></span><br><span class="line"><span class="comment">&lt;!-- 设置字符编码过滤器的过滤路径 --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">filter-mapping</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">filter-name</span>&gt;</span>CharacterEncodingFilter<span class="tag">&lt;/<span class="name">filter-name</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">url-pattern</span>&gt;</span>/*<span class="tag">&lt;/<span class="name">url-pattern</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">filter-mapping</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<br>
+
+
+
+<hr>
+<br>
+
+<h3 id="域对象共享数据"><a href="#域对象共享数据" class="headerlink" title="域对象共享数据"></a>域对象共享数据</h3><p><strong>使用servletAPI向request域对象共享数据</strong></p>
+<p>可以使用servletAPI向域对象中存放数据，但基本不使用</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@RequestMapping(&quot;index&quot;)</span></span><br><span class="line"><span class="keyword">public</span> String <span class="title function_">index</span><span class="params">(HttpServletRequest request)</span>&#123;</span><br><span class="line">    request.setAttribute(<span class="string">&quot;test&quot;</span>,<span class="string">&quot;testString&quot;</span>);</span><br><span class="line">    <span class="keyword">return</span> <span class="string">&quot;index&quot;</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<br>
+
+<p><strong>使用ModelAndView向request域对象共享数据</strong></p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@RequestMapping(&quot;index&quot;)</span></span><br><span class="line"><span class="keyword">public</span> ModelAndView <span class="title function_">index</span><span class="params">()</span>&#123;</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">        * ModelAndView有Model和View的功能</span></span><br><span class="line"><span class="comment">        * Model主要用于向请求域中共享数据</span></span><br><span class="line"><span class="comment">        * View主要用于设置视图，实现页面跳转</span></span><br><span class="line"><span class="comment">        */</span></span><br><span class="line">    <span class="type">ModelAndView</span> <span class="variable">mv</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">ModelAndView</span>();</span><br><span class="line">    <span class="comment">//向请求域中共享数据</span></span><br><span class="line">    mv.addObject(<span class="string">&quot;hello&quot;</span>,<span class="string">&quot;world&quot;</span>);</span><br><span class="line">    <span class="comment">//设置视图，实现页面跳转</span></span><br><span class="line">    mv.setViewName(<span class="string">&quot;index&quot;</span>);</span><br><span class="line">    <span class="keyword">return</span> mv;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<br>
+
+<p><strong>使用Model向request域对象共享数据</strong></p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@RequestMapping(&quot;index&quot;)</span></span><br><span class="line"><span class="keyword">public</span> String <span class="title function_">index</span><span class="params">(Model m)</span>&#123;</span><br><span class="line">    m.addAttribute(<span class="string">&quot;hello&quot;</span>,<span class="string">&quot;world&quot;</span>);</span><br><span class="line">    <span class="keyword">return</span> <span class="string">&quot;index&quot;</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<br>
+
+<p><strong>使用Map向request域对象共享数据</strong></p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@RequestMapping(&quot;index&quot;)</span></span><br><span class="line"><span class="keyword">public</span> String <span class="title function_">index</span><span class="params">(Map&lt;String,Object&gt; map)</span>&#123;</span><br><span class="line">    map.put(<span class="string">&quot;hello&quot;</span>,<span class="string">&quot;world&quot;</span>);</span><br><span class="line">    <span class="keyword">return</span> <span class="string">&quot;index&quot;</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<br>
+
+<p><strong>使用ModelMap向request域对象共享数据</strong></p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@RequestMapping(&quot;index&quot;)</span></span><br><span class="line"><span class="keyword">public</span> String <span class="title function_">index</span><span class="params">(ModelMap mm)</span>&#123;</span><br><span class="line">    mm.addAttribute(<span class="string">&quot;hello&quot;</span>,<span class="string">&quot;world&quot;</span>);</span><br><span class="line">    <span class="keyword">return</span> <span class="string">&quot;index&quot;</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<br>
+
+<p><strong>向session域中共享数据</strong></p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@RequestMapping(&quot;index&quot;)</span></span><br><span class="line"><span class="keyword">public</span> String <span class="title function_">index</span><span class="params">(HttpSession session)</span>&#123;</span><br><span class="line">    session.setAttribute(<span class="string">&quot;hello&quot;</span>,<span class="string">&quot;world&quot;</span>);</span><br><span class="line">    <span class="keyword">return</span> <span class="string">&quot;index&quot;</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<br>
+
+<p><strong>向application域共享数据</strong></p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@RequestMapping(&quot;index&quot;)</span></span><br><span class="line"><span class="keyword">public</span> String <span class="title function_">index</span><span class="params">(HttpSession session)</span>&#123;</span><br><span class="line">    <span class="type">ServletContext</span> <span class="variable">application</span> <span class="operator">=</span> session.getServletContext();</span><br><span class="line">    application.setAttribute(<span class="string">&quot;hello&quot;</span>,<span class="string">&quot;world&quot;</span>);</span><br><span class="line">    <span class="keyword">return</span> <span class="string">&quot;index&quot;</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<br>
+
+<hr>
+<br>
+
+<h2 id="SpringMVC的视图"><a href="#SpringMVC的视图" class="headerlink" title="SpringMVC的视图"></a>SpringMVC的视图</h2><br>
+
+<h3 id="自定义视图解析器"><a href="#自定义视图解析器" class="headerlink" title="自定义视图解析器"></a>自定义视图解析器</h3><p>当控制器方法中设置的视图名没有任何前缀时，此时的视图名称会被SpringMVC配置文件中所配置的视图解析器解析，视图名称拼接视图前缀和视图后缀所得到的最终路径，会通过转发的方式实现跳转</p>
+<br>
+
+<h3 id="转发视图"><a href="#转发视图" class="headerlink" title="转发视图"></a>转发视图</h3><p>SpringMVC中默认的转发视图是InternalResourceView</p>
+<p>创建转发视图的情况：</p>
+<p>当控制器方法中所设置的视图名称以 “forward:” 为前缀时，<strong>创建InternalResourceView视图</strong>，此时的视图名称不会被SpringMVC配置文件中所配置的视图解析器解析，而是会将前缀 “forward:” 去掉，剩余部分作为最终路径通过转发的方式实现跳转<strong>（只能跳转@RequestMapping映射过的视图）</strong></p>
+<p>例如 “forward:&#x2F;“，”forward:&#x2F;employee”</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@RequestMapping(&quot;index&quot;)</span></span><br><span class="line"><span class="keyword">public</span> String <span class="title function_">index</span><span class="params">()</span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="string">&quot;forward:/index&quot;</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<br>
+
+<h3 id="重定向视图"><a href="#重定向视图" class="headerlink" title="重定向视图"></a>重定向视图</h3><p>SpringMVC中默认的重定向视图是RedirectView</p>
+<p>当控制器方法中所设置的视图名称以 “redirect:” 为前缀时，<strong>创建RedirectView视图</strong>，此时的视图名称不会被SpringMVC配置文件中所配置的视图解析器解析，而是会将前缀 “redirect:” 去掉，剩余部分作为最终路径通过重定向的方式实现跳转<strong>（只能跳转@RequestMapping映射过的视图）</strong></p>
+<p>例如 “redirect:&#x2F;“，”redirect:&#x2F;employee”</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@RequestMapping(&quot;index&quot;)</span></span><br><span class="line"><span class="keyword">public</span> String <span class="title function_">index</span><span class="params">()</span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="string">&quot;redirect:/index&quot;</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<br>
+
+<h3 id="视图控制器-view-controller"><a href="#视图控制器-view-controller" class="headerlink" title="视图控制器 view-controller"></a>视图控制器 view-controller</h3><p><em>当控制器方法中，<strong>仅仅用来实现页面跳转（即不做任何其他的操作，只是页面跳转）</strong>，即只需要设置视图名称时，可以将处理器方法使用view-controller标签进行表示</em></p>
+<blockquote>
+<p>使用场景：</p>
+<p>spring文档里建议并将其做为最佳实践将所有的jsp页面放到WEB-INF下，不让直接访问，那么我们只能通过controller来访问jsp页面了，但是我们总不能为每个页面都写一个controller吧，那样太麻烦了，所以mvc:view-controller就是处理这个场景的一个shortcut（快捷方式）。</p>
+</blockquote>
+<p><img src="https://jjw-beiqi.github.io/2022/03/20/SpringMVC/image-20220313105546745-16471406629442.png" alt="image-20220313105546745"></p>
+<br>
+
+<p>配置view-controller后所有映射都会失效</p>
+<p>原因：<strong>如果没有mvc:annotation-driven，那么所有的@Controller注解可能就没有解析</strong>，所有当有请求时候都没有匹配的处理请求类，就都去<strong>mvc:default-servlet-handler</strong>即default servlet处理了。</p>
+<br>
+
+<blockquote>
+<p><a href="https://blog.csdn.net/qq_41984887/article/details/105045936">&lt;mvc:annotation-driven &#x2F;&gt;的作用</a></p>
+<p><img src="https://jjw-beiqi.github.io/2022/03/20/SpringMVC/image-20220313105823765-16471406609571.png" alt="image-20220313105823765"></p>
+</blockquote>
+<br>
+
+<h3 id="InternalResourceViewResolver控制器"><a href="#InternalResourceViewResolver控制器" class="headerlink" title="InternalResourceViewResolver控制器"></a>InternalResourceViewResolver控制器</h3><p>springMCV.xml</p>
+<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">bean</span> <span class="attr">class</span>=<span class="string">&quot;org.springframework.web.servlet.view.InternalResourceViewResolver&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;prefix&quot;</span> <span class="attr">value</span>=<span class="string">&quot;/WEB-INF/templates/&quot;</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;suffix&quot;</span> <span class="attr">value</span>=<span class="string">&quot;.jsp&quot;</span>/&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">bean</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<br>
+
+<hr>
+<br>
+
+<h2 id="RESTFul简介"><a href="#RESTFul简介" class="headerlink" title="RESTFul简介"></a>RESTFul简介</h2><blockquote>
+<p> REST全称是Representational State Transfer，中文意思是表述（编者注：通常译为表征）性状态转移。 它首次出现在2000年Roy Fielding的博士论文中，Roy Fielding是HTTP规范的主要编写者之一。 他在论文中提到：”我这篇文章的写作目的，就是想在符合架构原理的前提下，理解和评估以网络为基础的应用软件的架构设计，得到一个功能强、性能好、适宜通信的架构。REST指的是一组架构约束条件和原则。” 如果一个架构符合REST的约束条件和原则，我们就称它为RESTful架构。</p>
+<p> REST本身并没有创造新的技术、组件或服务，而隐藏在RESTful背后的理念就是使用Web的现有特征和能力， 更好地使用现有Web标准中的一些准则和约束。虽然REST本身受Web技术的影响很深， 但是理论上REST架构风格并不是绑定在HTTP上，只不过目前HTTP是唯一与REST相关的实例。</p>
+</blockquote>
+<p>参考：<a href="https://www.runoob.com/w3cnote/restful-architecture.html">菜鸟教程</a></p>
+<br>
+
+<h3 id="RESTFul的实现"><a href="#RESTFul的实现" class="headerlink" title="RESTFul的实现"></a>RESTFul的实现</h3><p>具体来说就是HTTP协议里的四个表示操作方式的动词：GET、POST、PUT、DELETE</p>
+<ul>
+<li>GET：用于获取资源</li>
+<li>POST：用于新建资源</li>
+<li>PUT：用于更新资源</li>
+<li>DELETE：用于删除资源</li>
+</ul>
+<br>
+
+<p>REST风格提倡URL地址使用统一的风格设计，从前到后各个单词使用斜杠分开，不使用问号键值对方式携带请求参数，而是将要发送给服务器的数据作为URL地址的一部分，以保证整体风格的一致性</p>
+<table>
+<thead>
+<tr>
+<th>操作</th>
+<th>传统方式</th>
+<th>REST风格</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>查询</td>
+<td>getUserById?id&#x3D;1</td>
+<td>user&#x2F;1——&gt;GET</td>
+</tr>
+<tr>
+<td>保存</td>
+<td>saveUser</td>
+<td>user——&gt;POST</td>
+</tr>
+<tr>
+<td>删除</td>
+<td>deleteUser?id&#x3D;1</td>
+<td>user&#x2F;1——&gt;DELETE</td>
+</tr>
+<tr>
+<td>更新</td>
+<td>updateUser</td>
+<td>user——&gt;PUT</td>
+</tr>
+</tbody></table>
+<br>
+
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@RequestMapping(value=&quot;/user/&#123;id&#125;&quot;, method=RequestMethod.GET)</span></span><br><span class="line"><span class="keyword">public</span> String <span class="title function_">getUserById</span><span class="params">()</span>&#123;</span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">@RequestMapping(value=&quot;/user&quot;, method=RequestMethod.POST)</span></span><br><span class="line"><span class="keyword">public</span> String <span class="title function_">saveUser</span><span class="params">(String username,String password)</span>&#123;</span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">@RequestMapping(value=&quot;/user/&#123;id&#125;&quot;, method=RequestMethod.DELETE)</span></span><br><span class="line"><span class="keyword">public</span> String <span class="title function_">deleteUser</span><span class="params">()</span>&#123;</span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">@RequestMapping(value=&quot;/user&quot;, method=RequestMethod.PUT)</span></span><br><span class="line"><span class="keyword">public</span> String <span class="title function_">updateUser</span><span class="params">(String username,String password)</span>&#123;</span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<br>
+
+<h3 id="PUT、DELETE请求方式存在浏览器兼容问题"><a href="#PUT、DELETE请求方式存在浏览器兼容问题" class="headerlink" title="PUT、DELETE请求方式存在浏览器兼容问题"></a>PUT、DELETE请求方式存在浏览器兼容问题</h3><blockquote>
+<p>浏览器确实支持PUT和DELETE，但是HTML不支持。</p>
+<p>这是因为HTML 4.01和最终的W3C HTML 5.0规范都说它们的form元素应允许的唯一HTTP方法是GET和POST。</p>
+<p>在HTML 5的开发过程中对此进行了很多讨论，有一次他们将它们添加到HTML 5中，然后再次删除。之所以从HTML5规范中删除其他方法，是因为HTML 4级浏览器永远无法支持它们(在制作时不属于HTML)。</p>
+</blockquote>
+<br>
+
+<p>解决：在web.xml文件中配置HiddenHttpMethodFilter过滤器</p>
+<p><em><strong>注：同时编码过滤器必须放在HiddenHttpMethodFilter过滤器之前</strong></em></p>
+<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="comment">&lt;!-- 配置HiddenHttpMethodFilter过滤器 --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">filter</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">filter-name</span>&gt;</span>HiddenHttpMethodFilter<span class="tag">&lt;/<span class="name">filter-name</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">filter-class</span>&gt;</span>org.springframework.web.filter.HiddenHttpMethodFilter<span class="tag">&lt;/<span class="name">filter-class</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">filter</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">filter-mapping</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">filter-name</span>&gt;</span>HiddenHttpMethodFilter<span class="tag">&lt;/<span class="name">filter-name</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">url-pattern</span>&gt;</span>/*<span class="tag">&lt;/<span class="name">url-pattern</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">filter-mapping</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<br>
+
+<ul>
+<li><p>PUT请求表单提交代码</p>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="comment">&lt;!-- 显式请求方式为post请求方式 --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">form</span> <span class="attr">th:action</span>=<span class="string">&quot;@&#123;/user&#125;&quot;</span> <span class="attr">method</span>=<span class="string">&quot;post&quot;</span>&gt;</span></span><br><span class="line">    <span class="comment">&lt;!-- 添加一个隐藏域用于更改请求方式 --&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">&quot;hidden&quot;</span> <span class="attr">name</span>=<span class="string">&quot;_method&quot;</span> <span class="attr">value</span>=<span class="string">&quot;PUT&quot;</span>&gt;</span></span><br><span class="line">    用户名：<span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">&quot;text&quot;</span> <span class="attr">name</span>=<span class="string">&quot;username&quot;</span>&gt;</span></span><br><span class="line">    密码：<span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">&quot;password&quot;</span> <span class="attr">name</span>=<span class="string">&quot;password&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">&quot;submit&quot;</span> <span class="attr">value</span>=<span class="string">&quot;更改&quot;</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">form</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<br>
+</li>
+<li><p>由于DELETE请求通常使用超链接、按钮形式，所以使用js代码将超链接、按钮与隐藏域绑定</p>
+<p>更改DELETE请求参考：<a href="https://blog.csdn.net/zzz841318172/article/details/109614543">如何将超链接GET请求变成DELETE请求</a></p>
+</li>
+</ul>
+<br>
+
+<br>
+
+<p>扩展问题：DispatcherServlet是访问不到静态资源的，当DispatcherServlet访问不到时，应该让Tomcat配置的DefaultServlet去访问静态资源，因此需要配置<strong>mvc:default-servlet-handler</strong>标签，由于配置<strong>mvc:default-servlet-handler</strong>标签后也会导致映射路径失效，所以也需要配置<strong>mvc:annotation-driven</strong>标签</p>
+<blockquote>
+<p>如果配置了DispatcherServlet，那么所有的请求都会被拦截,包括静态资源。</p>
+<ul>
+<li>‘&#x2F;‘ 将会替换掉容器的default servlet, 将会处理所有其他handler(Servlet)都不处理的访问请求.</li>
+<li>如果web.xml没有配置其他特殊路径的servlet, 基本上所有的请求都交由DispatcherServlet处理.</li>
+<li>将不会再访问容器中原始默认的servlet(你对静态资源的访问就是通过容器默认servlet处理的)，故而静态资源将不可访问！</li>
+</ul>
+</blockquote>
+<br>
+
+<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="comment">&lt;!-- 开放静态资源访问 --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">mvc:default-servlet-handler</span>/&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">mvc:annotation-driven</span>/&gt;</span></span><br></pre></td></tr></table></figure>
+
+<br>
+
+<br>
+
+<p><font color="orange"><strong>刨根问底一下 为什么加入两个注解就没有问题了呢？</strong></font></p>
+<blockquote>
+<p>首先是两个注解都不加，此时HandlerMappings中的<strong>AnnotationHandlerMapping</strong>中<strong>存储这Controller和url的映射关系</strong>，由于我们<strong>没有编写Controller去处理js html等静态资源</strong>，所以此时的状态是动态资源可以访问，静态资源不可访问。</p>
+<img src="https://jjw-beiqi.github.io/2022/03/20/SpringMVC/1263112-20190406160521291-2027530586.png" alt="img" style="zoom:50%;">
+
+<p>其次是<strong>只加上default-servlet-handler，发现处理Controller的AnnotationHandler不见了</strong>，取而代之的是SimpleURLHandlerMapping，该Handler种的handlerMap非常简单只有一个&#x2F;** <strong>即无论什么请求都直接去当前webapp下去找。这样配置静态资源肯定是可以访问的</strong>，因为它的作用和不使用SpringMVC中的DIsplacedServlet直接使用Tomcat一样。但由于AnnotationHandler的缺失，导致Controller这种基于注解配置处理请求的方法无法访问，所以这种配置下的状态是<strong>静态资源可以访问，动态资源不可以访问。</strong></p>
+<img src="https://jjw-beiqi.github.io/2022/03/20/SpringMVC/1263112-20190406160807464-126528350.png" alt="img" style="zoom:50%;">
+
+<p><strong>最后当把两个注解都加上的时候，不仅有处理静态资源的SimpleUrlHandlerMapping，还多了一个优先级最高的RequestMapping</strong>，点开详情信息发现我们配置的Controller都在里面。这就是我们要的效果：</p>
+<p><font color="red"><strong>对于每一个非jsp请求都会被DispatchServlet拦下，然后交给优先级最高的RequestMapping处理。RequestMapping遍历自己的Mappings，如果这个请求是一个动态请求，那么一定可以找到对应的Controller，Controller处理并返回；如果该请求是一个针对静态资源文件的，RequestMapping无能为力，他会按照优先级交给后续HandlerMapping如没啥用的BeanNameUrlHandlerMapping，以及放在最后用来兜底的SimpleUrlHandlerMapping，当SimpleUrlHandlerMapping拿到一个针对静态资源的请求后，会在&#x2F;**目录下找到静态资源并返回。</strong></font></p>
+<img src="https://jjw-beiqi.github.io/2022/03/20/SpringMVC/1263112-20190406161147379-857785000.png" alt="img" style="zoom: 67%;">
+
+
+
+<p><a href="https://www.cnblogs.com/AshOfTime/p/10655014.html">转载自原创博主</a></p>
+</blockquote>
+<hr>
+<br>
+
+<h2 id="HttpMessageConverter"><a href="#HttpMessageConverter" class="headerlink" title="HttpMessageConverter"></a>HttpMessageConverter</h2>]]></content>
+      <categories>
+        <category>spring</category>
+      </categories>
+      <tags>
+        <tag>SpringMVC</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>singleton</title>
+    <url>/2022/03/21/singleton/</url>
+    <content><![CDATA[<h1 id="单例模式"><a href="#单例模式" class="headerlink" title="单例模式"></a>单例模式</h1><blockquote>
+<p>单例模式（Singleton Pattern）是 Java 中最简单的设计模式之一。这种类型的设计模式属于创建型模式，它提供了一种创建对象的最佳方式。</p>
+<p>这种模式涉及到一个单一的类，该类负责创建自己的对象，同时确保只有单个对象被创建。这个类提供了一种访问其唯一的对象的方式，可以直接访问，不需要实例化该类的对象。</p>
+</blockquote>
+<p><strong>注意：</strong></p>
+<ul>
+<li>1、单例类只能有一个实例。</li>
+<li>2、单例类必须自己创建自己的唯一实例。</li>
+<li>3、单例类必须给所有其他对象提供这一实例。</li>
+</ul>
+<br>
+
+<p><strong>优点：</strong></p>
+<ul>
+<li>1、在内存里只有一个实例，减少了内存的开销，尤其是频繁的创建和销毁实例（比如管理学院首页页面缓存）。</li>
+<li>2、避免对资源的多重占用（比如写文件操作）。</li>
+</ul>
+<br>
+
+<p><strong>缺点：</strong></p>
+<p>没有接口，不能继承，与单一职责原则冲突，一个类应该只关心内部逻辑，而不关心外面怎么样来实例化。</p>
+<br>
+
+<p><strong>使用场景：</strong></p>
+<ul>
+<li>1、要求生产唯一序列号。</li>
+<li>2、WEB 中的计数器，不用每次刷新都在数据库里加一次，用单例先缓存起来。</li>
+<li>3、创建的一个对象需要消耗的资源过多，比如 I&#x2F;O 与数据库的连接等。</li>
+</ul>
+<br>
+
+<hr>
+<h1 id="单例模式的几种实现方式"><a href="#单例模式的几种实现方式" class="headerlink" title="单例模式的几种实现方式"></a>单例模式的几种实现方式</h1><br>
+
+<h2 id="饿汉模式"><a href="#饿汉模式" class="headerlink" title="饿汉模式"></a>饿汉模式</h2><blockquote>
+<p>描述：基于 classloader 机制避免了多线程的同步问题，不过，instance 在类装载时就实例化，虽然导致类装载的原因有很多种，在单例模式中大多数都是调用 getInstance 方法， 但是也不能确定有其他的方式（或者其他的静态方法）导致类装载，这时候初始化 instance 显然没有达到 lazy loading 的效果。</p>
+</blockquote>
+<p>如果后续并没有使用到，可能会造成浪费空间</p>
+<p>线程安全问题与登记式是一样的</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Hungry</span> &#123;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">private</span> <span class="title function_">Hungry</span><span class="params">()</span>&#123;&#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> <span class="keyword">static</span> <span class="type">Hungry</span> <span class="variable">HUNGRY</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Hungry</span>();</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> Hungry <span class="title function_">getInstance</span><span class="params">()</span>&#123;</span><br><span class="line">        <span class="keyword">return</span> HUNGRY;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<br>
+
+<hr>
+<br>
+
+<h2 id="登记式"><a href="#登记式" class="headerlink" title="登记式"></a>登记式</h2><blockquote>
+<p>这种方式能达到双检锁方式一样的功效，但实现更简单。对静态域使用延迟初始化，应使用这种方式而不是双检锁方式。这种方式只适用于静态域的情况，双检锁方式可在实例域需要延迟初始化时使用。</p>
+<p>描述：它跟饿汉式不同的是：饿汉式只要 Singleton 类被装载了，那么 instance 就会被实例化（没有达到 lazy loading 效果），而这种方式是 <strong>Holder类被装载了，instance 不一定被初始化。因为 SingletonHolder 类没有被主动使用，只有通过显式调用 getInstance 方法时，才会显式装载 SingletonHolder 类，从而实例化 instance。</strong></p>
+</blockquote>
+<br>
+
+<p><strong>但没有同步锁是如何保证线程安全的呢？</strong></p>
+<p>jvm在加载Holder时不会连SingletonHolder一同加载（ lazy loading ），这里涉及到<strong>类的加载时机</strong></p>
+<blockquote>
+<ol>
+<li>遇到 new 、getstatic 、putstatic 或 invokestatic 这4条字节码指令时，如果类没有进行过初始化，则需要先触发其初始化 。生成这4条指令的最常见的Java代码场景是：使用new关键字实例化对象的时候、读取或设置一个类的静态字段（被final修饰、已在编译期把结果放入常量池的静态字段除外）的时候，以及凋用一个类的静态方法的时候。</li>
+<li>使用 java-lang 、 reflect 包的方法对类进行反射调用的时候，如果类没有进行过初始化，则需要先触发其初始化 。</li>
+<li>当初始化一个类的时候，如果发现其父类还没有进行过初始化，则需要先触发其父类的初始化 。</li>
+<li>当虚拟机启动时，用户需要指定一个要执行的主类（包含 main() 方法的那个类），虚拟机会先初始化这个主类。</li>
+<li>当使用 JDK 1.7 的动态语言支持时，如果一个 java.lang.invokeMethodHandle 实例最后的解析结果 REF-getStatic 、 REF_putStatic 、 REF invokeStatic 的方法句柄，并且这个方法句柄所对应的类没有进行过初始化，则需要先触发其初始化</li>
+</ol>
+</blockquote>
+<br>
+
+<p><strong>外部调用getInstance()方法后，会触发SingletonHolder的加载，任意一个线程获取该【类加载】的锁后，就能保SingletonHolder首次给new出来，只有一个线程进入该内部类。加载完成后，static成员变量是唯一的。</strong></p>
+<br>
+
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Holder</span> &#123;</span><br><span class="line">    </span><br><span class="line">     <span class="keyword">private</span> <span class="title function_">Holder</span> <span class="params">()</span>&#123;&#125;  </span><br><span class="line">    </span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">class</span> <span class="title class_">SingletonHolder</span> &#123;  </span><br><span class="line">    	<span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="type">Holder</span> <span class="variable">holder</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Holder</span>();  </span><br><span class="line">    &#125;  </span><br><span class="line">    </span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> Holder <span class="title function_">getInstance</span><span class="params">()</span> &#123;  </span><br><span class="line">        <span class="keyword">return</span> SingletonHolder.holder;  </span><br><span class="line">    &#125;  </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<br>
+
+<hr>
+<br>
+
+<h2 id="懒汉模式"><a href="#懒汉模式" class="headerlink" title="懒汉模式"></a>懒汉模式</h2><p>当使用到的时候才去加载这个类，避免了空间的浪费</p>
+<p>这种方式是最基本的实现方式，这种实现最大的问题就是不支持多线程。因为没有加锁 synchronized，所以严格意义上它并不算单例模式。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Lazy</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="title function_">Lazy</span><span class="params">()</span>&#123;&#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> Lazy lazy;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> Lazy <span class="title function_">getInstance</span><span class="params">()</span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (lazy == <span class="literal">null</span>)&#123;</span><br><span class="line">            lazy = <span class="keyword">new</span> <span class="title class_">Lazy</span>();</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> lazy;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<br>
+
+<p>上述实现存在一个明显的问题，就是在多线程的情况下不能保证只返回了一个实例，因为getInstance()方法没有加同步锁，可能会造成线程安全的问题</p>
+<p>因此我们需要在getInstance()方法上加上同步锁</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Lazy</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="title function_">Lazy</span><span class="params">()</span>&#123;&#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> Lazy lazy;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">synchronized</span> Lazy <span class="title function_">getInstance</span><span class="params">()</span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (lazy == <span class="literal">null</span>)&#123;</span><br><span class="line">            lazy = <span class="keyword">new</span> <span class="title class_">Lazy</span>();</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> lazy;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<br>
+
+<p>在给getInstance()方法加上同步锁之后，这个方法变成线程安全的了，也不会有产生多个实例的情况了。</p>
+<p>但是这样做的话我们发现每一次判断lazy实例是否存在的时候就要去拿到同步锁，而判断与线程安全是无关的，因此在方法上加同步锁会大大降低性能。因此我们采取<strong>双重锁校验模式</strong>，将同步代码块放在方法中，每次先判断实例是否存在，如果存在就直接返回实例；不存在再去拿同步锁进行初始化，这样可以减少线程上下文的切换，提升性能</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Lazy</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="title function_">Lazy</span><span class="params">()</span>&#123;&#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> Lazy lazy;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> Lazy <span class="title function_">getInstance</span><span class="params">()</span>&#123;</span><br><span class="line">            <span class="keyword">if</span> (lazy == <span class="literal">null</span>) &#123;  </span><br><span class="line">            <span class="keyword">synchronized</span> (Lazy.class) &#123;  </span><br><span class="line">                <span class="keyword">if</span> (lazy == <span class="literal">null</span>) &#123;  </span><br><span class="line">                    lazy = <span class="keyword">new</span> <span class="title class_">Lazy</span>();  </span><br><span class="line">                &#125;  </span><br><span class="line">            &#125;  </span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> lazy;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<br>
+
+<p>上述实现代码，似乎很完美的解决了线程安全问题和性能的问题，但它仍然是线程不安全的。<strong>因为初始化代码的new关键字并不是原子性操作</strong></p>
+<blockquote>
+<p>new的操作步骤：</p>
+<ul>
+<li>分配内存空间</li>
+<li>执行构造方法，初始化对象</li>
+<li>把这个对象指向这个空间</li>
+</ul>
+<p>由于不是原子性操作，可能会造成指令重排的问题，例如先将这个对象指向这个空间，再去初始化对象</p>
+</blockquote>
+<p>情况：一个线程A执行代码，在new操作时发生了指令重排，导致先将对象指向分配的空间，再去初始化对象；这时线程B进入发现这个对象已经指向了一个空间，<strong>它就会认为这个对象!&#x3D;null</strong>，但实际上这个对象可能还未完成初始化对象</p>
+<p>所以由于存在这种情况，我们必须禁止指令重排，即<strong>加上volatile关键字</strong>，这样才算是完整的双重锁校验模式</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Lazy</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="title function_">Lazy</span><span class="params">()</span>&#123;&#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">volatile</span> <span class="keyword">static</span> Lazy lazy;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> Lazy <span class="title function_">getInstance</span><span class="params">()</span>&#123;</span><br><span class="line">            <span class="keyword">if</span> (lazy == <span class="literal">null</span>) &#123;  </span><br><span class="line">            <span class="keyword">synchronized</span> (Lazy.class) &#123;  </span><br><span class="line">                <span class="keyword">if</span> (lazy == <span class="literal">null</span>) &#123;  </span><br><span class="line">                    lazy = <span class="keyword">new</span> <span class="title class_">Lazy</span>();  </span><br><span class="line">                &#125;  </span><br><span class="line">            &#125;  </span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> lazy;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<br>
+
+<h3 id="反射机制破坏单例"><a href="#反射机制破坏单例" class="headerlink" title="反射机制破坏单例"></a>反射机制破坏单例</h3><h4 id="增加校验"><a href="#增加校验" class="headerlink" title="增加校验"></a>增加校验</h4><p>虽然解决了线程安全问题、性能和原子性的问题，但因为存在反射机制，可以人为的去破坏单例模式。所以仍然存在安全问题</p>
+<p>我们可以在造构造器中判断是否存在这个实例来解决问题</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Lazy</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="title function_">Lazy</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="keyword">synchronized</span> (Lazy.class)&#123;</span><br><span class="line">            <span class="comment">//当这个实例已经存在了则不能使用反射机制创建对象</span></span><br><span class="line">            <span class="keyword">if</span> (lazy!=<span class="literal">null</span>)&#123;</span><br><span class="line">                <span class="keyword">throw</span> <span class="keyword">new</span> <span class="title class_">RuntimeException</span>(<span class="string">&quot;请勿使用反射机制破坏&quot;</span>);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">volatile</span> <span class="keyword">static</span> Lazy lazy;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> Lazy <span class="title function_">getInstance</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="keyword">if</span> (lazy == <span class="literal">null</span>) &#123;</span><br><span class="line">            <span class="keyword">synchronized</span> (Lazy.class) &#123;</span><br><span class="line">                <span class="keyword">if</span> (lazy == <span class="literal">null</span>) &#123;</span><br><span class="line">                    lazy = <span class="keyword">new</span> <span class="title class_">Lazy</span>();</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> lazy;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<br>
+
+<h4 id="增加信号量"><a href="#增加信号量" class="headerlink" title="增加信号量"></a>增加信号量</h4><p>但这样也存在一点问题，反射机制创建的lazy对象与正常创建的lazy对象并不是一个对象，当第一次也是使用反射机制去创建lazy对象时，lazy!&#x3D;null是检测不出来是否存在这个单例的</p>
+<p>我们可以使用<strong>信号量的方式</strong>，这样虽然第一次可以使用反射机制获得到单例，但也只能获取到一次，某种程度上来说这也算一个单例</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Lazy</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="type">boolean</span> <span class="variable">flag</span> <span class="operator">=</span> <span class="literal">false</span>;</span><br><span class="line">    <span class="keyword">private</span> <span class="title function_">Lazy</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="keyword">synchronized</span> (Lazy.class)&#123;</span><br><span class="line">            <span class="keyword">if</span> (flag == <span class="literal">false</span>)&#123;</span><br><span class="line">                flag = <span class="literal">true</span>;</span><br><span class="line">                lazy=<span class="built_in">this</span>;</span><br><span class="line">            &#125;<span class="keyword">else</span> &#123;</span><br><span class="line">                <span class="keyword">throw</span> <span class="keyword">new</span> <span class="title class_">RuntimeException</span>(<span class="string">&quot;请勿使用反射机制破坏&quot;</span>);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">volatile</span> <span class="keyword">static</span> Lazy lazy;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> Lazy <span class="title function_">getInstance</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="keyword">if</span> (lazy == <span class="literal">null</span>) &#123;</span><br><span class="line">            <span class="keyword">synchronized</span> (Lazy.class) &#123;</span><br><span class="line">                <span class="keyword">if</span> (lazy == <span class="literal">null</span>) &#123;</span><br><span class="line">                    lazy = <span class="keyword">new</span> <span class="title class_">Lazy</span>();</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> lazy;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<br>
+
+<p>但但但是就算做到这样仍然不能防止被反射破坏，因为既然反射能获得到私有的构造器，它也能获取到私有静态变量，这样的话可以每次反射创建对象后再将信号量设置为原来的样子。但由于私有静态变量较难被反编译，因此这种方法也存在它的可用性</p>
+<blockquote>
+<p><strong>总结：懒汉式实现的单例模式是不可以防止被反射破坏的</strong></p>
+</blockquote>
+<br>
+
+<hr>
+<br>
+
+<h2 id="枚举模式"><a href="#枚举模式" class="headerlink" title="枚举模式"></a>枚举模式</h2><p>我们先来看一个枚举的单例模式的实现</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">enum</span>  <span class="title class_">EnumSingleton</span> &#123;</span><br><span class="line">    INSTANCE;</span><br><span class="line">    <span class="keyword">public</span> EnumSingleton <span class="title function_">getInstance</span><span class="params">()</span>&#123;</span><br><span class="line">        <span class="keyword">return</span> INSTANCE;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<br>
+
+<h3 id="使用无参构造器反射创建"><a href="#使用无参构造器反射创建" class="headerlink" title="使用无参构造器反射创建"></a>使用无参构造器反射创建</h3><p>当我们试图使用反射机制去创建这个枚举类时</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">Constructor&lt;EnumSingleton&gt; constructor= <span class="literal">null</span>;</span><br><span class="line">constructor = EnumSingleton.class.getDeclaredConstructor();</span><br><span class="line">constructor.setAccessible(<span class="literal">true</span>);</span><br><span class="line">EnumSingleton singleton= <span class="literal">null</span>;</span><br><span class="line">singleton = constructor.newInstance();</span><br><span class="line">System.out.println(singleton);</span><br></pre></td></tr></table></figure>
+
+<p>将会报异常：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">Exception in thread &quot;main&quot; java.lang.NoSuchMethodException: com.lxp.pattern.singleton.EnumSingleton.&lt;init&gt;()</span><br></pre></td></tr></table></figure>
+
+<p>使用debug模式运行，会发现是因为EnumSingleton.class.getDeclaredConstructors()获取所有构造器，会发现并没有我们所设置的无参构造器，但是我们并没有在枚举类中设置其他的有参构造方法，这是怎么回事呢？查看编译后的源码，其继承了Enum类，所以会有（String.class,int.class）的构造器</p>
+<p><img src="https://jjw-beiqi.github.io/2022/03/21/singleton/image-20220321203503408.png" alt="image-20220321203503408"></p>
+<br>
+
+<h3 id="使用有参构造器反射创建"><a href="#使用有参构造器反射创建" class="headerlink" title="使用有参构造器反射创建"></a>使用有参构造器反射创建</h3><p>也许会有疑问，是不是因为自身的类没有无参构造方法才导致的异常？但执行下述代码后仍然会异常</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">Constructor&lt;EnumSingleton&gt; constructor= <span class="literal">null</span>;</span><br><span class="line">constructor = EnumSingleton.class.getDeclaredConstructor(String.class,<span class="type">int</span>.class);</span><br><span class="line">constructor.setAccessible(<span class="literal">true</span>);</span><br><span class="line">EnumSingleton singleton= <span class="literal">null</span>;</span><br><span class="line">singleton = constructor.newInstance();</span><br><span class="line">System.out.println(singleton);</span><br></pre></td></tr></table></figure>
+
+<p>抛出异常：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">Exception in thread &quot;main&quot; java.lang.IllegalArgumentException: Cannot reflectively create enum objects</span><br></pre></td></tr></table></figure>
+
+<p><strong>Cannot reflectively create enum objects</strong> 这个异常的意思是不能使用反射机制创建枚举对象</p>
+<br>
+
+<h3 id="原因"><a href="#原因" class="headerlink" title="原因"></a>原因</h3><p>我们通过查看newInstance方法的源码发现，<strong>当对枚举类使用newInstance方法时会抛出异常</strong></p>
+<p><img src="https://jjw-beiqi.github.io/2022/03/21/singleton/image-20220321201936962.png" alt="image-20220321201936962"></p>
+<p>为了防止反射机制破坏懒汉模式，我们可以使用枚举的方式实现单例模式</p>
+<blockquote>
+<p>枚举是最好的单例模式，同时枚举模式也能保证线程安全</p>
+</blockquote>
+]]></content>
+      <categories>
+        <category>设计模式</category>
+      </categories>
+      <tags>
+        <tag>单例模式</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>synchronized锁、Lock锁简单使用</title>
+    <url>/2022/03/19/synchronized%E9%94%81%E3%80%81Lock%E9%94%81%E7%AE%80%E5%8D%95%E4%BD%BF%E7%94%A8/</url>
+    <content><![CDATA[<h1 id="synchronized锁"><a href="#synchronized锁" class="headerlink" title="synchronized锁"></a>synchronized锁</h1><h3 id="修饰实例方法："><a href="#修饰实例方法：" class="headerlink" title="修饰实例方法："></a>修饰实例方法：</h3><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">synchronized</span> <span class="keyword">void</span> <span class="title function_">method</span><span class="params">()</span>&#123;</span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>被锁的对象是类的实例对象，例如</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="type">SynContainer</span> <span class="variable">container</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">SynContainer</span>();</span><br><span class="line"></span><br><span class="line"><span class="keyword">new</span> <span class="title class_">Productor</span>(container).start();</span><br><span class="line"><span class="keyword">new</span> <span class="title class_">Consumer</span>(container).start();</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">//生产者</span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Productor</span> <span class="keyword">extends</span> <span class="title class_">Thread</span>()&#123;</span><br><span class="line">    SynContainer container;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">public</span> <span class="title function_">Productor</span><span class="params">(SynContainer container)</span>&#123;</span><br><span class="line">        <span class="built_in">this</span>.SynContainer = container;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//消费者</span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Consumer</span> <span class="keyword">extends</span> <span class="title class_">Thread</span>()&#123;</span><br><span class="line">    SynContainer container;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">public</span> <span class="title function_">Productor</span><span class="params">(SynContainer container)</span>&#123;</span><br><span class="line">        <span class="built_in">this</span>.SynContainer = container;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">SynContainer</span>()&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">synchronized</span> <span class="keyword">void</span> <span class="title function_">method</span><span class="params">()</span>&#123;</span><br><span class="line">    	...</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//当运行这两个生产者和消费者时，锁住的是SynContainer的实例container，同一时刻只能有一个线程访问这个实例</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="修饰静态方法："><a href="#修饰静态方法：" class="headerlink" title="修饰静态方法："></a>修饰静态方法：</h3><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">synchronized</span> <span class="keyword">void</span> <span class="title function_">method</span><span class="params">()</span>&#123;</span><br><span class="line">	...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>被锁的对象是类对象</p>
+<h3 id="修饰实例对象"><a href="#修饰实例对象" class="headerlink" title="修饰实例对象:"></a>修饰实例对象:</h3><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">synchronized</span> (<span class="built_in">this</span>)&#123;</span><br><span class="line">	...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>同步代码块，锁住的是该类的实例对象</p>
+<h3 id="修饰class对象"><a href="#修饰class对象" class="headerlink" title="修饰class对象:"></a>修饰class对象:</h3><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">synchronized</span> (SynContainer.class)&#123;</span><br><span class="line">	...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>同步代码块，锁住的是该类的类对象</p>
+<h3 id="修饰任意实例对象Object"><a href="#修饰任意实例对象Object" class="headerlink" title="修饰任意实例对象Object:"></a>修饰任意实例对象Object:</h3><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="type">int</span> <span class="variable">num</span> <span class="operator">=</span> <span class="number">10</span>;</span><br><span class="line">synchronize (num)&#123;</span><br><span class="line">	...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>同步代码块，锁住的是配置的实例对象</p>
+<p>int对象作为锁</p>
+<hr>
+<h1 id="Lock锁"><a href="#Lock锁" class="headerlink" title="Lock锁"></a>Lock锁</h1><h3 id="ReentrantLock锁"><a href="#ReentrantLock锁" class="headerlink" title="ReentrantLock锁"></a>ReentrantLock锁</h3><p>相比于synchronized锁，Lock锁是显示的，能够显示的定义同步锁来实现同步</p>
+<p>ReentrantLock（可重入锁）类实现了Lock，它拥有与synchronized相同的并发性和内存语义，在实现线程安全的控制中，比较常用的是ReentrantLock，可以显示加锁、释放锁</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">reentrantLock.lock();</span><br><span class="line"></span><br><span class="line">...</span><br><span class="line"></span><br><span class="line">reentrantLock.unlock();</span><br></pre></td></tr></table></figure>
+
+<p>例如：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Test</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;</span><br><span class="line">        <span class="type">TestLock1</span> <span class="variable">lock1</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">TestLock1</span>();</span><br><span class="line"></span><br><span class="line">        <span class="keyword">new</span> <span class="title class_">Thread</span>(lock1).start();</span><br><span class="line">        <span class="keyword">new</span> <span class="title class_">Thread</span>(lock1).start();</span><br><span class="line">        <span class="keyword">new</span> <span class="title class_">Thread</span>(lock1).start();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">TestLock1</span> <span class="keyword">implements</span> <span class="title class_">Runnable</span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="type">int</span> <span class="variable">num</span> <span class="operator">=</span> <span class="number">10</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//定义可重入锁</span></span><br><span class="line">    <span class="keyword">private</span> <span class="type">ReentrantLock</span> <span class="variable">reentrantLock</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">ReentrantLock</span>();</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">run</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="keyword">while</span> (<span class="literal">true</span>)&#123;</span><br><span class="line">            <span class="keyword">try</span> &#123;</span><br><span class="line">                reentrantLock.lock();  <span class="comment">//加锁</span></span><br><span class="line">                <span class="keyword">if</span> (num&gt;<span class="number">0</span>)&#123;</span><br><span class="line">                    System.out.println(num--);</span><br><span class="line">                &#125;<span class="keyword">else</span> &#123;</span><br><span class="line">                    <span class="keyword">break</span>;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;<span class="keyword">finally</span> &#123;</span><br><span class="line">                reentrantLock.unlock();  <span class="comment">//解锁</span></span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="生产者消费者问题（管程法）"><a href="#生产者消费者问题（管程法）" class="headerlink" title="生产者消费者问题（管程法）"></a>生产者消费者问题（管程法）</h2><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Test</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;</span><br><span class="line">		<span class="type">SynContainer</span> <span class="variable">container</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">SynContainer</span>();</span><br><span class="line"></span><br><span class="line">        <span class="keyword">new</span> <span class="title class_">Productor</span>(container).start();</span><br><span class="line">        <span class="keyword">new</span> <span class="title class_">Consumer</span>(container).start();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//生产者</span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Productor</span> <span class="keyword">extends</span> <span class="title class_">Thread</span>&#123;</span><br><span class="line">    SynContainer container;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="title function_">Productor</span><span class="params">(SynContainer container)</span>&#123;</span><br><span class="line">        <span class="built_in">this</span>.container = container;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">run</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="keyword">for</span> (<span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span> <span class="number">0</span>; i&lt;<span class="number">100</span> ; i++)</span><br><span class="line">        container.push(<span class="keyword">new</span> <span class="title class_">Chicken</span>(i));</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//消费者</span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Consumer</span> <span class="keyword">extends</span> <span class="title class_">Thread</span>&#123;</span><br><span class="line">    SynContainer container;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="title function_">Consumer</span><span class="params">(SynContainer container)</span>&#123;</span><br><span class="line">        <span class="built_in">this</span>.container = container;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">run</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="keyword">for</span> (<span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span> <span class="number">0</span> ; i&lt;<span class="number">100</span> ; i++)&#123;</span><br><span class="line">            container.pop();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//产品</span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Chicken</span>&#123;</span><br><span class="line">    <span class="type">int</span> id ; <span class="comment">//产品编号</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="title function_">Chicken</span><span class="params">(<span class="type">int</span> id)</span>&#123;</span><br><span class="line">        <span class="built_in">this</span>.id = id;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//缓冲区</span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">SynContainer</span>&#123;</span><br><span class="line">    <span class="comment">//容器大小</span></span><br><span class="line">    Chicken[] chickens = <span class="keyword">new</span> <span class="title class_">Chicken</span>[<span class="number">10</span>];</span><br><span class="line">    <span class="comment">//容器计数器</span></span><br><span class="line">    <span class="type">int</span> <span class="variable">count</span> <span class="operator">=</span> <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//生产者放入产品</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">synchronized</span>  <span class="keyword">void</span> <span class="title function_">push</span><span class="params">(Chicken chicken)</span>&#123;</span><br><span class="line">        <span class="comment">//如果容器满了，就需要等待消费者消费</span></span><br><span class="line">        <span class="comment">//最好不要用if，应该用while，否则当有多个消费者的时候，会出现脏判断的</span></span><br><span class="line">        <span class="keyword">while</span> (count == chickens.length)&#123;</span><br><span class="line">            <span class="keyword">try</span> &#123;</span><br><span class="line">                <span class="built_in">this</span>.wait();<span class="comment">//阻塞此线程，并释放锁</span></span><br><span class="line">            &#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</span><br><span class="line">                e.printStackTrace();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">//如果容器没满，生产者放入产品</span></span><br><span class="line">        chickens[count] = chicken;</span><br><span class="line">        count++;</span><br><span class="line"></span><br><span class="line">        <span class="comment">//通知消费者消费产品</span></span><br><span class="line">        <span class="built_in">this</span>.notifyAll(); <span class="comment">//唤醒其他等待线程</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//消费者消费产品</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">synchronized</span> Chicken <span class="title function_">pop</span><span class="params">()</span>&#123;</span><br><span class="line">        <span class="comment">//判断能否消费</span></span><br><span class="line">        <span class="keyword">if</span> (count == <span class="number">0</span>)&#123;</span><br><span class="line">            <span class="comment">//等待生产者生产，消费者等待</span></span><br><span class="line">            <span class="keyword">try</span> &#123;</span><br><span class="line">                <span class="built_in">this</span>.wait();</span><br><span class="line">            &#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</span><br><span class="line">                e.printStackTrace();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">//如果可以消费</span></span><br><span class="line">        count--;</span><br><span class="line">        <span class="type">Chicken</span> <span class="variable">chicken</span> <span class="operator">=</span> chickens[count];</span><br><span class="line"></span><br><span class="line">        <span class="comment">//通知生产者生产</span></span><br><span class="line">        <span class="built_in">this</span>.notifyAll();</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> chicken;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+]]></content>
+      <tags>
+        <tag>synchronized、Lock</tag>
       </tags>
   </entry>
   <entry>
@@ -1304,46 +1344,6 @@
       </categories>
       <tags>
         <tag>排序算法</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>synchronized锁、Lock锁简单使用</title>
-    <url>/2022/03/19/synchronized%E9%94%81%E3%80%81Lock%E9%94%81%E7%AE%80%E5%8D%95%E4%BD%BF%E7%94%A8/</url>
-    <content><![CDATA[<h1 id="synchronized锁"><a href="#synchronized锁" class="headerlink" title="synchronized锁"></a>synchronized锁</h1><h3 id="修饰实例方法："><a href="#修饰实例方法：" class="headerlink" title="修饰实例方法："></a>修饰实例方法：</h3><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">synchronized</span> <span class="keyword">void</span> <span class="title function_">method</span><span class="params">()</span>&#123;</span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>被锁的对象是类的实例对象，例如</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="type">SynContainer</span> <span class="variable">container</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">SynContainer</span>();</span><br><span class="line"></span><br><span class="line"><span class="keyword">new</span> <span class="title class_">Productor</span>(container).start();</span><br><span class="line"><span class="keyword">new</span> <span class="title class_">Consumer</span>(container).start();</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">//生产者</span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Productor</span> <span class="keyword">extends</span> <span class="title class_">Thread</span>()&#123;</span><br><span class="line">    SynContainer container;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">public</span> <span class="title function_">Productor</span><span class="params">(SynContainer container)</span>&#123;</span><br><span class="line">        <span class="built_in">this</span>.SynContainer = container;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//消费者</span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Consumer</span> <span class="keyword">extends</span> <span class="title class_">Thread</span>()&#123;</span><br><span class="line">    SynContainer container;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">public</span> <span class="title function_">Productor</span><span class="params">(SynContainer container)</span>&#123;</span><br><span class="line">        <span class="built_in">this</span>.SynContainer = container;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">SynContainer</span>()&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">synchronized</span> <span class="keyword">void</span> <span class="title function_">method</span><span class="params">()</span>&#123;</span><br><span class="line">    	...</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//当运行这两个生产者和消费者时，锁住的是SynContainer的实例container，同一时刻只能有一个线程访问这个实例</span></span><br></pre></td></tr></table></figure>
-
-
-
-<h3 id="修饰静态方法："><a href="#修饰静态方法：" class="headerlink" title="修饰静态方法："></a>修饰静态方法：</h3><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">synchronized</span> <span class="keyword">void</span> <span class="title function_">method</span><span class="params">()</span>&#123;</span><br><span class="line">	...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>被锁的对象是类对象</p>
-<h3 id="修饰实例对象"><a href="#修饰实例对象" class="headerlink" title="修饰实例对象:"></a>修饰实例对象:</h3><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">synchronized</span> (<span class="built_in">this</span>)&#123;</span><br><span class="line">	...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>同步代码块，锁住的是该类的实例对象</p>
-<h3 id="修饰class对象"><a href="#修饰class对象" class="headerlink" title="修饰class对象:"></a>修饰class对象:</h3><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">synchronized</span> (SynContainer.class)&#123;</span><br><span class="line">	...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>同步代码块，锁住的是该类的类对象</p>
-<h3 id="修饰任意实例对象Object"><a href="#修饰任意实例对象Object" class="headerlink" title="修饰任意实例对象Object:"></a>修饰任意实例对象Object:</h3><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="type">int</span> <span class="variable">num</span> <span class="operator">=</span> <span class="number">10</span>;</span><br><span class="line">synchronize (num)&#123;</span><br><span class="line">	...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>同步代码块，锁住的是配置的实例对象</p>
-<p>int对象作为锁</p>
-<hr>
-<h1 id="Lock锁"><a href="#Lock锁" class="headerlink" title="Lock锁"></a>Lock锁</h1><h3 id="ReentrantLock锁"><a href="#ReentrantLock锁" class="headerlink" title="ReentrantLock锁"></a>ReentrantLock锁</h3><p>相比于synchronized锁，Lock锁是显示的，能够显示的定义同步锁来实现同步</p>
-<p>ReentrantLock（可重入锁）类实现了Lock，它拥有与synchronized相同的并发性和内存语义，在实现线程安全的控制中，比较常用的是ReentrantLock，可以显示加锁、释放锁</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">reentrantLock.lock();</span><br><span class="line"></span><br><span class="line">...</span><br><span class="line"></span><br><span class="line">reentrantLock.unlock();</span><br></pre></td></tr></table></figure>
-
-<p>例如：</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Test</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;</span><br><span class="line">        <span class="type">TestLock1</span> <span class="variable">lock1</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">TestLock1</span>();</span><br><span class="line"></span><br><span class="line">        <span class="keyword">new</span> <span class="title class_">Thread</span>(lock1).start();</span><br><span class="line">        <span class="keyword">new</span> <span class="title class_">Thread</span>(lock1).start();</span><br><span class="line">        <span class="keyword">new</span> <span class="title class_">Thread</span>(lock1).start();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">TestLock1</span> <span class="keyword">implements</span> <span class="title class_">Runnable</span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="type">int</span> <span class="variable">num</span> <span class="operator">=</span> <span class="number">10</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//定义可重入锁</span></span><br><span class="line">    <span class="keyword">private</span> <span class="type">ReentrantLock</span> <span class="variable">reentrantLock</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">ReentrantLock</span>();</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">run</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="keyword">while</span> (<span class="literal">true</span>)&#123;</span><br><span class="line">            <span class="keyword">try</span> &#123;</span><br><span class="line">                reentrantLock.lock();  <span class="comment">//加锁</span></span><br><span class="line">                <span class="keyword">if</span> (num&gt;<span class="number">0</span>)&#123;</span><br><span class="line">                    System.out.println(num--);</span><br><span class="line">                &#125;<span class="keyword">else</span> &#123;</span><br><span class="line">                    <span class="keyword">break</span>;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;<span class="keyword">finally</span> &#123;</span><br><span class="line">                reentrantLock.unlock();  <span class="comment">//解锁</span></span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-
-
-<h2 id="生产者消费者问题（管程法）"><a href="#生产者消费者问题（管程法）" class="headerlink" title="生产者消费者问题（管程法）"></a>生产者消费者问题（管程法）</h2><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Test</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;</span><br><span class="line">		<span class="type">SynContainer</span> <span class="variable">container</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">SynContainer</span>();</span><br><span class="line"></span><br><span class="line">        <span class="keyword">new</span> <span class="title class_">Productor</span>(container).start();</span><br><span class="line">        <span class="keyword">new</span> <span class="title class_">Consumer</span>(container).start();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//生产者</span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Productor</span> <span class="keyword">extends</span> <span class="title class_">Thread</span>&#123;</span><br><span class="line">    SynContainer container;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="title function_">Productor</span><span class="params">(SynContainer container)</span>&#123;</span><br><span class="line">        <span class="built_in">this</span>.container = container;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">run</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="keyword">for</span> (<span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span> <span class="number">0</span>; i&lt;<span class="number">100</span> ; i++)</span><br><span class="line">        container.push(<span class="keyword">new</span> <span class="title class_">Chicken</span>(i));</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//消费者</span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Consumer</span> <span class="keyword">extends</span> <span class="title class_">Thread</span>&#123;</span><br><span class="line">    SynContainer container;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="title function_">Consumer</span><span class="params">(SynContainer container)</span>&#123;</span><br><span class="line">        <span class="built_in">this</span>.container = container;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">run</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="keyword">for</span> (<span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span> <span class="number">0</span> ; i&lt;<span class="number">100</span> ; i++)&#123;</span><br><span class="line">            container.pop();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//产品</span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Chicken</span>&#123;</span><br><span class="line">    <span class="type">int</span> id ; <span class="comment">//产品编号</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="title function_">Chicken</span><span class="params">(<span class="type">int</span> id)</span>&#123;</span><br><span class="line">        <span class="built_in">this</span>.id = id;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//缓冲区</span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">SynContainer</span>&#123;</span><br><span class="line">    <span class="comment">//容器大小</span></span><br><span class="line">    Chicken[] chickens = <span class="keyword">new</span> <span class="title class_">Chicken</span>[<span class="number">10</span>];</span><br><span class="line">    <span class="comment">//容器计数器</span></span><br><span class="line">    <span class="type">int</span> <span class="variable">count</span> <span class="operator">=</span> <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//生产者放入产品</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">synchronized</span>  <span class="keyword">void</span> <span class="title function_">push</span><span class="params">(Chicken chicken)</span>&#123;</span><br><span class="line">        <span class="comment">//如果容器满了，就需要等待消费者消费</span></span><br><span class="line">        <span class="comment">//最好不要用if，应该用while，否则当有多个消费者的时候，会出现脏判断的</span></span><br><span class="line">        <span class="keyword">while</span> (count == chickens.length)&#123;</span><br><span class="line">            <span class="keyword">try</span> &#123;</span><br><span class="line">                <span class="built_in">this</span>.wait();<span class="comment">//阻塞此线程，并释放锁</span></span><br><span class="line">            &#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</span><br><span class="line">                e.printStackTrace();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">//如果容器没满，生产者放入产品</span></span><br><span class="line">        chickens[count] = chicken;</span><br><span class="line">        count++;</span><br><span class="line"></span><br><span class="line">        <span class="comment">//通知消费者消费产品</span></span><br><span class="line">        <span class="built_in">this</span>.notifyAll(); <span class="comment">//唤醒其他等待线程</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//消费者消费产品</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">synchronized</span> Chicken <span class="title function_">pop</span><span class="params">()</span>&#123;</span><br><span class="line">        <span class="comment">//判断能否消费</span></span><br><span class="line">        <span class="keyword">if</span> (count == <span class="number">0</span>)&#123;</span><br><span class="line">            <span class="comment">//等待生产者生产，消费者等待</span></span><br><span class="line">            <span class="keyword">try</span> &#123;</span><br><span class="line">                <span class="built_in">this</span>.wait();</span><br><span class="line">            &#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</span><br><span class="line">                e.printStackTrace();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">//如果可以消费</span></span><br><span class="line">        count--;</span><br><span class="line">        <span class="type">Chicken</span> <span class="variable">chicken</span> <span class="operator">=</span> chickens[count];</span><br><span class="line"></span><br><span class="line">        <span class="comment">//通知生产者生产</span></span><br><span class="line">        <span class="built_in">this</span>.notifyAll();</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> chicken;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-]]></content>
-      <tags>
-        <tag>synchronized、Lock</tag>
       </tags>
   </entry>
 </search>
