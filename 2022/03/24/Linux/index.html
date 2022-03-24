@@ -1,0 +1,568 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><title>Linux | Socket</title><meta name="keywords" content="Linux"><meta name="author" content="贝奇野菜汁"><meta name="copyright" content="贝奇野菜汁"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="LinuxLinux入门Linux介绍 Linux是一个开源、免费的操作系统，其稳定性、安全性、处理多并发已经得到业界的认可 Linux的主要发行版：ubuntu、redhat、centos、suse  Linux目录结构Linux的文件系统时采用层级式的树状目录结构，在此结构中的最上层是根目录 “ &#x2F; ”，然后在此目录下再创建其他的目录 在Linux世界里，一切皆文件 &#x2F;bi">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Linux">
+<meta property="og:url" content="https://jjw-beiqi.github.io/2022/03/24/Linux/index.html">
+<meta property="og:site_name" content="Socket">
+<meta property="og:description" content="LinuxLinux入门Linux介绍 Linux是一个开源、免费的操作系统，其稳定性、安全性、处理多并发已经得到业界的认可 Linux的主要发行版：ubuntu、redhat、centos、suse  Linux目录结构Linux的文件系统时采用层级式的树状目录结构，在此结构中的最上层是根目录 “ &#x2F; ”，然后在此目录下再创建其他的目录 在Linux世界里，一切皆文件 &#x2F;bi">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://jjw-beiqi.github.io/img/cover16.png">
+<meta property="article:published_time" content="2022-03-24T07:56:05.000Z">
+<meta property="article:modified_time" content="2022-03-24T07:56:52.884Z">
+<meta property="article:author" content="贝奇野菜汁">
+<meta property="article:tag" content="Linux">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://jjw-beiqi.github.io/img/cover16.png"><link rel="shortcut icon" href="/img/head.jpg"><link rel="canonical" href="https://jjw-beiqi.github.io/2022/03/24/Linux/"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"search.xml","languages":{"hits_empty":"找不到您查询的内容：${query}"}},
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery@2/dist/fjGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery@2/dist/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'Linux',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2022-03-24 15:56:52'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><meta name="generator" content="Hexo 6.1.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/images/head.jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data is-center"><div class="data-item"><a href="/archives/"><div class="headline">文章</div><div class="length-num">11</div></a></div><div class="data-item"><a href="/tags/"><div class="headline">标签</div><div class="length-num">11</div></a></div><div class="data-item"><a href="/categories/"><div class="headline">分类</div><div class="length-num">6</div></a></div></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('/img/cover16.png')"><nav id="nav"><span id="blog_name"><a id="site-name" href="/">Socket</a></span><div id="menus"><div id="search-button"><a class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div></div><div id="toggle-menu"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">Linux</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2022-03-24T07:56:05.000Z" title="发表于 2022-03-24 15:56:05">2022-03-24</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2022-03-24T07:56:52.884Z" title="更新于 2022-03-24 15:56:52">2022-03-24</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/Linux/">Linux</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">字数总计:</span><span class="word-count">7k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>23分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="Linux"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h1 id="Linux"><a href="#Linux" class="headerlink" title="Linux"></a>Linux</h1><h2 id="Linux入门"><a href="#Linux入门" class="headerlink" title="Linux入门"></a>Linux入门</h2><p><strong>Linux介绍</strong></p>
+<p>Linux是一个开源、免费的操作系统，其稳定性、安全性、处理多并发已经得到业界的认可</p>
+<p>Linux的主要发行版：ubuntu、redhat、centos、suse</p>
+<hr>
+<h2 id="Linux目录结构"><a href="#Linux目录结构" class="headerlink" title="Linux目录结构"></a>Linux目录结构</h2><p>Linux的文件系统时采用层级式的树状目录结构，在此结构中的<strong>最上层是根目录 “ &#x2F; ”</strong>，然后在此目录下再创建其他的目录</p>
+<p><strong>在Linux世界里，一切皆文件</strong></p>
+<p>&#x2F;bin：存放常用的指令</p>
+<p>&#x2F;dev：设备管理器</p>
+<p>&#x2F;etc：所有的系统管理所需要的配置文件和子目录</p>
+<p>&#x2F;home：存放普通用户的主目录，在Linux中每一个用户都有一个自己的目录，一般该目录名是以用户的账号命名的</p>
+<p>&#x2F;lib：系统开机所需要最基本的动态连接共享库</p>
+<p>&#x2F;media：Linux系统会自动识别一些设备，如U盘、光驱等，当识别后，Linux会把识别的设备挂载到这个目录下</p>
+<p>&#x2F;opt：这是给主机额外安装软件所摆放的目录，如安装MySQL数据库就可放到该目录下</p>
+<p>&#x2F;root：超级用户的用户主目录</p>
+<p>&#x2F;boot：存放的是启动Linux时使用的一些核心文件，包括一些连接文件以及镜像文件</p>
+<p>&#x2F;sbin：存放超级用户的指令</p>
+<p>&#x2F;sys：系统</p>
+<p>&#x2F;tmp：临时文件夹</p>
+<p>&#x2F;usr：用户很多应用程序和文件都放在这个目录下</p>
+<p>&#x2F;usr&#x2F;local：这是另一个给主机额外安装软件所安装的目录，一般是通过编译源码方式安装的程序</p>
+<p>&#x2F;var：这个目录中存放着在不断扩充着的东西，习惯将经常被修改的目录放在这个目录下，包括各种日志文件</p>
+<hr>
+<h2 id="远程登录Linux系统"><a href="#远程登录Linux系统" class="headerlink" title="远程登录Linux系统"></a>远程登录Linux系统</h2><p>XShell（远程登录到Linux的软件）</p>
+<p>XFtp（上传和下载文件的软件）</p>
+<p>特别说明：如果希望安装好 XShell5 就可以远程访问 Linux系统的话，需要 Linux 启用了 SSHD 服务，该服务会监听22号端口</p>
+<h3 id="XShell远程操作"><a href="#XShell远程操作" class="headerlink" title="XShell远程操作"></a>XShell远程操作</h3><p>1、XShell创建会话</p>
+<p><img src="https://jjw-beiqi.github.io/2022/03/24/Linux/image-20220314142911201-16472393535309.png" alt="image-20220314142911201"></p>
+<p>2、Linux开启SSHD服务</p>
+<p>ssh服务安装命令</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get install openssh-server</span><br></pre></td></tr></table></figure>
+
+<p>启动ssh服务命令</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">service ssh start</span><br></pre></td></tr></table></figure>
+
+<p>查看服务是否正确启动命令</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ps -e | grep ssh</span><br></pre></td></tr></table></figure>
+
+
+
+<p>3、连接后即可远程操作</p>
+<h3 id="XFtp远程传输文件"><a href="#XFtp远程传输文件" class="headerlink" title="XFtp远程传输文件"></a>XFtp远程传输文件</h3><p>创建会话</p>
+<p><img src="https://jjw-beiqi.github.io/2022/03/24/Linux/image-20220314151907888.png" alt="image-20220314151907888"></p>
+<p>解决XFtp乱码</p>
+<p><img src="https://jjw-beiqi.github.io/2022/03/24/Linux/image-20220314152131762.png" alt="image-20220314152131762"></p>
+<hr>
+<h2 id="vim编辑器"><a href="#vim编辑器" class="headerlink" title="vim编辑器"></a>vim编辑器</h2><p><strong>介绍</strong></p>
+<p>vim具有程序编辑的能力，可以主动的以字体颜色辨别语法的正确性，方便程序设计。代码补完、编译及错误跳转等方便编程的功能特别丰富</p>
+<h3 id="vim三种模式"><a href="#vim三种模式" class="headerlink" title="vim三种模式"></a>vim三种模式</h3><p><strong>正常模式</strong></p>
+<p>以vim打开一个档案就直接进入正常模式，在正常模式下可以使用快捷键</p>
+<p><strong>插入模式</strong></p>
+<p>可以输入内容，正常模式下按 i 可以进入插入模式</p>
+<p><strong>命令行模式</strong></p>
+<p>可以使用相关指令，完成读取、存盘、替换、离开vim、显示行号等</p>
+<p><img src="https://jjw-beiqi.github.io/2022/03/24/Linux/image-20220314161121394-164724559315210.png" alt="image-20220314161121394"></p>
+<h3 id="vim快捷键"><a href="#vim快捷键" class="headerlink" title="vim快捷键"></a>vim快捷键</h3><p>yy：复制当前行，5yy表示复制当前行的下面5行，以此类推</p>
+<p>p：粘贴</p>
+<p>dd：删除当前行，5dd表示删除当前行的下面5行，以此类推</p>
+<p>&#x2F;关键字：在文件中查找指定的关键字，按 n 切换下一个关键字</p>
+<p>：set nu &#x2F; ：set nonu：开启或关闭行号</p>
+<p>G：到文件的末行</p>
+<p>gg：到文件的首行</p>
+<p>u：撤销一个动作</p>
+<p>shift+g：将光标移动到指定行号</p>
+<p>​        第一步：打开行号 ：set nu</p>
+<p>​        第二步：输入行号</p>
+<p>​        第三部：按下shift+g</p>
+<hr>
+<h2 id="Linux命令"><a href="#Linux命令" class="headerlink" title="Linux命令"></a>Linux命令</h2><h3 id="关机-amp-重启命令"><a href="#关机-amp-重启命令" class="headerlink" title="关机&amp;重启命令"></a>关机&amp;重启命令</h3><p>shutdown：</p>
+<ul>
+<li><p>shutdown -h now：立即关机</p>
+</li>
+<li><p>shutdown -h 1：一分钟之后关机</p>
+</li>
+<li><p>shutdown -r now：立即重启计算机</p>
+</li>
+</ul>
+<p>halt：立即关机</p>
+<p>reboot：立即重启</p>
+<p>sync：将内存的数据同步到磁盘</p>
+<h3 id="用户登录和注销"><a href="#用户登录和注销" class="headerlink" title="用户登录和注销"></a>用户登录和注销</h3><p>su：切换用户</p>
+<p>logout：注销用户，图形界面无效</p>
+<h3 id="用户管理"><a href="#用户管理" class="headerlink" title="用户管理"></a>用户管理</h3><p><img src="https://jjw-beiqi.github.io/2022/03/24/Linux/image-20220314202357172.png" alt="image-20220314202357172"></p>
+<p>Linux系统是一个多用户多任务的操作系统，任何一个要使用系统资源的用户，都必须首先向系统管理员申请一个账号，然后以这个账号的身份进入系统</p>
+<p><strong>Linux的用户至少要属于一个用户组</strong></p>
+<p><strong>添加用户</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">useradd [-mMnr][-c &lt;备注&gt;][-d &lt;登入目录&gt;][-e &lt;有效期限&gt;][-f &lt;缓冲天数&gt;][-g &lt;群组&gt;][-G &lt;群组&gt;][-s &lt;shell&gt;][-u &lt;uid&gt;][用户帐号]</span><br><span class="line"></span><br><span class="line">// 若没有指定哪个组，则会创建一个跟用户名同名的组，并放入</span><br><span class="line">例：useradd -d 指定家目录 用户名 // 指定用户的家目录 </span><br><span class="line"></span><br><span class="line">参数说明：</span><br><span class="line">-c&lt;备注&gt; 　		加上备注文字。备注文字会保存在passwd的备注栏位中。</span><br><span class="line">-d&lt;登入目录&gt; 　		指定用户登入时的起始目录。</span><br><span class="line">-D 　			变更预设值．</span><br><span class="line">-e&lt;有效期限&gt; 　		指定帐号的有效期限。</span><br><span class="line">-f&lt;缓冲天数&gt; 　		指定在密码过期后多少天即关闭该帐号。</span><br><span class="line">-g&lt;群组&gt; 　		指定用户所属的群组。</span><br><span class="line">-G&lt;群组&gt; 　		指定用户所属的附加群组。</span><br><span class="line">-m 　			自动建立用户的登入目录。</span><br><span class="line">-M 　			不要自动建立用户的登入目录。</span><br><span class="line">-n 　			取消建立以用户名称为名的群组．</span><br><span class="line">-r 　			建立系统帐号。</span><br><span class="line">-s&lt;shell&gt;　 　	指定用户登入后所使用的shell。</span><br><span class="line">-u&lt;uid&gt; 　		指定用户ID。</span><br></pre></td></tr></table></figure>
+
+
+
+<p><strong>给用户指定密码</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">passwd [-k] [-l] [-u [-f]] [-d] [-S] 用户名</span><br><span class="line"></span><br><span class="line">必要参数：</span><br><span class="line">-d 		删除密码</span><br><span class="line">-f 		强迫用户下次登录时必须修改口令</span><br><span class="line">-w 		口令要到期提前警告的天数</span><br><span class="line">-k 		更新只能发送在过期之后</span><br><span class="line">-l 		停止账号使用</span><br><span class="line">-S 		显示密码信息</span><br><span class="line">-u 		启用已被停止的账户</span><br><span class="line">-x 		指定口令最长存活期</span><br><span class="line">-g		修改群组密码</span><br><span class="line">		指定口令最短存活期</span><br><span class="line">-i 		口令过期后多少天停用账户</span><br></pre></td></tr></table></figure>
+
+
+
+<p><strong>删除用户</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">userdel [-r] 用户名</span><br><span class="line"></span><br><span class="line">参数说明：</span><br><span class="line">-r 		删除用户登入目录以及目录中所有文件。</span><br></pre></td></tr></table></figure>
+
+
+
+<p><strong>查询用户信息</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">id</span> 用户名</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://jjw-beiqi.github.io/2022/03/24/Linux/image-20220314211326880-16472636084721.png" alt="image-20220314211326880"></p>
+<p><strong>切换用户</strong></p>
+<p>在操作Linux过程中，如果当前用户的权限不够时，可以通过 su 指令来切换到高权限用户，比如root用户</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">su 用户名</span><br><span class="line"></span><br><span class="line">说明：</span><br><span class="line">从权限高的用户切换到权限低的用户，不需要输入密码，反之需要</span><br><span class="line">需要返回到原来的用户时，使用<span class="built_in">exit</span>指令</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<h3 id="用户组管理"><a href="#用户组管理" class="headerlink" title="用户组管理"></a>用户组管理</h3><p>类似于角色，系统可以对有共性的多个用户进行统一的管理</p>
+<p><strong>新增一个组</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">groupadd [-g gid [-o]] [-r] [-f] 组名</span><br><span class="line"></span><br><span class="line">参数说明：</span><br><span class="line">-g：指定新建工作组的 <span class="built_in">id</span>；</span><br><span class="line">-r：创建系统工作组，系统工作组的组ID小于 500；</span><br><span class="line">-K：覆盖配置文件 <span class="string">&quot;/ect/login.defs&quot;</span>；</span><br><span class="line">-o：允许添加组 ID 号不唯一的工作组。</span><br><span class="line">-f,--force: 如果指定的组已经存在，此选项将失明了仅以成功状态退出。当与 -g 一起使用，并且指定的GID_MIN已经存在时，选择另一个唯一的GID（即-g关闭）。</span><br></pre></td></tr></table></figure>
+
+
+
+<p><strong>删除一个组</strong> </p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">groupdel 组名</span><br></pre></td></tr></table></figure>
+
+
+
+<p><strong>修改用户账号的设定</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">usermod [-LU][-c &lt;备注&gt;][-d &lt;登入目录&gt;][-e &lt;有效期限&gt;][-f &lt;缓冲天数&gt;][-g &lt;群组&gt;][-G &lt;群组&gt;][-l &lt;帐号名称&gt;][-s &lt;shell&gt;][-u &lt;uid&gt;] 用户名</span><br><span class="line"></span><br><span class="line">参数说明：</span><br><span class="line">-c&lt;备注&gt; 　		修改用户帐号的备注文字。</span><br><span class="line">-d登入目录&gt; 　		修改用户登入时的目录。</span><br><span class="line">-e&lt;有效期限&gt; 　		修改帐号的有效期限。</span><br><span class="line">-f&lt;缓冲天数&gt; 　		修改在密码过期后多少天即关闭该帐号。</span><br><span class="line">-g&lt;群组&gt; 　		修改用户所属的群组。</span><br><span class="line">-G&lt;群组&gt; 　		修改用户所属的附加群组。</span><br><span class="line">-l&lt;帐号名称&gt; 　		修改用户帐号名称。</span><br><span class="line">-L 　			锁定用户密码，使密码无效。</span><br><span class="line">-s&lt;shell&gt; 　		修改用户登入后所使用的shell。</span><br><span class="line">-u&lt;uid&gt; 　		修改用户ID。</span><br><span class="line">-U 　			解除密码锁定。</span><br></pre></td></tr></table></figure>
+
+
+
+<p><strong>用户和组的相关文件</strong></p>
+<p>&#x2F;etc&#x2F;passwd 文件</p>
+<ul>
+<li>用户的配置文件，记录用户的各种信息</li>
+<li>格式：用户名：口令：用户标识号：组标识号：注释性描述：主目录：登录shell</li>
+</ul>
+<p><img src="https://jjw-beiqi.github.io/2022/03/24/Linux/image-20220315083637847-16473045993691.png" alt="image-20220315083637847"></p>
+<p>&#x2F;etc&#x2F;shadow 文件</p>
+<ul>
+<li>口令（密码）的配置文件</li>
+<li>格式：登录名：加密口令：最后一次修改时间：最小时间间隔：最大时间间隔：警告时间：不活动时间：失效时间：标志</li>
+</ul>
+<p>&#x2F;etc&#x2F;group 文件</p>
+<ul>
+<li>组的配置文件，记录Linux包含的组的信息</li>
+<li>格式：组名：口令：组标识号：组内用户列表</li>
+</ul>
+<p><img src="https://jjw-beiqi.github.io/2022/03/24/Linux/image-20220315084024768.png" alt="image-20220315084024768"></p>
+<h3 id="帮助指令"><a href="#帮助指令" class="headerlink" title="帮助指令"></a>帮助指令</h3><p><strong>man获得帮助信息</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">man [命令或配置文件] 功能：获得帮助信息</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">例如查看<span class="built_in">ls</span>命令的帮助信息</span><br><span class="line">man <span class="built_in">ls</span></span><br></pre></td></tr></table></figure>
+
+
+
+<p><strong>help指令</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">help</span> 命令</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://jjw-beiqi.github.io/2022/03/24/Linux/image-20220315145533581.png" alt="image-20220315145533581"></p>
+<p><strong>help与man的区别</strong></p>
+<ol>
+<li><p>help命令用于显示shell内部的帮助信息。help命令只能显示shell内部的命令帮助信息。而对于外部命令的帮助信息只能使用man或者info命令查看。</p>
+</li>
+<li><p>man命令，通过man指令可以查看Linux中的指令帮助、配置文件帮助和编程帮助等信息。</p>
+</li>
+</ol>
+<p>一般看信息都用查看man文档，而help只是一个简单的描述，方便，但man文档中都包含了。help 是内部命令的帮助,比如cd ，man 是外部命令的帮助，比如ls。</p>
+<h3 id="文件目录类指令"><a href="#文件目录类指令" class="headerlink" title="文件目录类指令"></a>文件目录类指令</h3><p><strong>pwd指令</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">pwd</span> 显示当前工作目录的绝对路径</span><br></pre></td></tr></table></figure>
+
+
+
+<p><strong>ls指令</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"> <span class="built_in">ls</span> [-alrtAFR] [name...] 查看当前目录的所有内容信息</span><br><span class="line"> </span><br><span class="line"> 参数 :</span><br><span class="line">-a 		显示所有文件及目录 (. 开头的隐藏文件也会列出)</span><br><span class="line">-l		除文件名称外，亦将文件型态、权限、拥有者、文件大小等资讯详细列出</span><br><span class="line">-r 		将文件以相反次序显示(原定依英文字母次序)</span><br><span class="line">-t 		将文件依建立时间之先后次序列出</span><br><span class="line">-A 		同 -a ，但不列出 <span class="string">&quot;.&quot;</span> (目前目录) 及 <span class="string">&quot;..&quot;</span> (父目录)</span><br><span class="line">-F 		在列出的文件名称后加一符号；例如可执行档则加 <span class="string">&quot;*&quot;</span>, 目录则加 <span class="string">&quot;/&quot;</span></span><br><span class="line">-R 		若目录下有文件，则以下之文件亦皆依序列出</span><br></pre></td></tr></table></figure>
+
+
+
+<p><strong>cd指令</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cd</span> [dirName]</span><br><span class="line"></span><br><span class="line">例如：</span><br><span class="line"><span class="built_in">cd</span> /usr/bin		 跳到 /usr/bin/ </span><br><span class="line"><span class="built_in">cd</span> ~			跳到自己的 home 目录</span><br><span class="line"><span class="built_in">cd</span> ..		跳到目前目录的上层</span><br></pre></td></tr></table></figure>
+
+
+
+<p><strong>mkdir指令</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">mkdir</span> [-p] dirName</span><br><span class="line"></span><br><span class="line">例如：</span><br><span class="line"><span class="built_in">mkdir</span> /home/dog</span><br><span class="line"></span><br><span class="line">参数说明：</span><br><span class="line">-p 		确保目录名称存在，不存在的就建一个。</span><br></pre></td></tr></table></figure>
+
+
+
+<p><strong>rmdir指令</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">rmdir</span> [-p] dirName 删除非空文件</span><br><span class="line"></span><br><span class="line">例如：</span><br><span class="line"><span class="built_in">rmdir</span> /home/dog</span><br><span class="line"></span><br><span class="line">参数：</span><br><span class="line">-p 		是当子目录被删除后使它也成为空目录的话，则顺便一并删除。</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">注：<span class="built_in">rmdir</span>删除的是空目录，如果目录下有内容时无法删除，如需要删除非空目录，使用：</span><br><span class="line">    <span class="built_in">rm</span> -rf 需删除的目录</span><br></pre></td></tr></table></figure>
+
+
+
+<p><strong>touch指令</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">touch</span> dirName 创建一个空文件</span><br></pre></td></tr></table></figure>
+
+
+
+<p><strong>cp指令</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cp</span> [options] <span class="built_in">source</span>（原文件） directory（目标目录） 拷贝文件到指定目录</span><br><span class="line"></span><br><span class="line">注：\<span class="built_in">cp</span> -r <span class="built_in">test</span>/ target/  如果<span class="built_in">test</span>在target目录中存在则强制覆盖</span><br><span class="line"></span><br><span class="line">参数说明：</span><br><span class="line">-a：		此选项通常在复制目录时使用，它保留链接、文件属性，并复制目录下的所有内容。其作用等于dpR参数组合。</span><br><span class="line">-d：		复制时保留链接。这里所说的链接相当于 Windows 系统中的快捷方式。</span><br><span class="line">-f：		覆盖已经存在的目标文件而不给出提示。</span><br><span class="line">-i：		与 -f 选项相反，在覆盖目标文件之前给出提示，要求用户确认是否覆盖，回答 y 时目标文件将被覆盖。</span><br><span class="line">-p：		除复制文件的内容外，还把修改时间和访问权限也复制到新文件中。</span><br><span class="line">-r：		若给出的源文件是一个目录文件，此时将复制该目录下所有的子目录和文件。</span><br><span class="line">-l：		不复制文件，只是生成链接文件。</span><br></pre></td></tr></table></figure>
+
+
+
+<p><strong>rm指令</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">rm</span> [options] 文件名/目录名 	移除文件或目录</span><br><span class="line"></span><br><span class="line">参数：</span><br><span class="line">-i 		删除前逐一询问确认。</span><br><span class="line">-f 		即使原档案属性设为唯读，亦直接删除，无需逐一确认。</span><br><span class="line">-r 		递归将目录及以下之档案亦逐一删除。</span><br></pre></td></tr></table></figure>
+
+
+
+<p><strong>mv指令</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">mv</span> oldName newName	重命名文件（把当前目录下的文件移动到当前目录下，相当于覆盖）</span><br><span class="line"><span class="built_in">mv</span> <span class="built_in">source</span> /target	移动文件</span><br></pre></td></tr></table></figure>
+
+
+
+<p><strong>cat指令</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cat</span> [-AbeEnstTuv] 文件名		查看文件内容，只能浏览文件，而不能修改文件</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">参数说明：</span><br><span class="line">-n：		由 1 开始对所有输出的行数编号。</span><br><span class="line">-b：		和 -n 相似，只不过对于空白行不编号。</span><br><span class="line">-s：		当遇到有连续两行以上的空白行，就代换为一行的空白行。</span><br><span class="line">-v：		使用 ^ 和 M- 符号，除了 LFD 和 TAB 之外。</span><br><span class="line">-E：		在每行结束处显示 $。</span><br><span class="line">-T：		将 TAB 字符显示为 ^I。</span><br><span class="line">-A：		等价于 -vET。</span><br><span class="line">-e：		等价于<span class="string">&quot;-vE&quot;</span>选项；</span><br><span class="line">-t：		等价于<span class="string">&quot;-vT&quot;</span>选项；</span><br></pre></td></tr></table></figure>
+
+
+
+<p><strong>more指令</strong></p>
+<p>more指令是一个基于 vi 编辑器的文本过滤器，它以全屏幕的方式按页显示文本文件的内容</p>
+<p><img src="https://jjw-beiqi.github.io/2022/03/24/Linux/image-20220315204411492.png" alt="image-20220315204411492"></p>
+<img src="https://jjw-beiqi.github.io/2022/03/24/Linux/image-20220315214357749.png" alt="image-20220315214357749" style="zoom:50%;">
+
+
+
+<p><strong>less指令</strong></p>
+<p>less指令用分屏查看文件内容，它的功能与more指令类似，但是比more指令更加强大，支持各种显示终端。<strong>less指令在显示文件内容时，并不是一次将整个文件加载之后才显示，而是根据显示需要加载内容，对于显示大型文件有较高的效率</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">less [参数] 文件 </span><br><span class="line"></span><br><span class="line">参数说明：</span><br><span class="line">-b 		&lt;缓冲区大小&gt; 设置缓冲区的大小</span><br><span class="line">-e 		当文件显示结束后，自动离开</span><br><span class="line">-f 		强迫打开特殊文件，例如外围设备代号、目录和二进制文件</span><br><span class="line">-g 		只标志最后搜索的关键词</span><br><span class="line">-i 		忽略搜索时的大小写</span><br><span class="line">-m 		显示类似more命令的百分比</span><br><span class="line">-N 		显示每行的行号</span><br><span class="line">-o 		&lt;文件名&gt; 将less 输出的内容在指定文件中保存起来</span><br><span class="line">-Q 		不使用警告音</span><br><span class="line">-s 		显示连续空行为一行</span><br><span class="line">-S 		行过长时间将超出部分舍弃</span><br><span class="line">-x 		&lt;数字&gt; 将<span class="string">&quot;tab&quot;</span>键显示为规定的数字空格</span><br><span class="line">/字符串：向下搜索<span class="string">&quot;字符串&quot;</span>的功能</span><br><span class="line">?字符串：向上搜索<span class="string">&quot;字符串&quot;</span>的功能</span><br><span class="line">-n		重复前一个搜索（与 / 或 ? 有关）</span><br><span class="line">-N		反向重复前一个搜索（与 / 或 ? 有关）</span><br><span class="line">-b 		向上翻一页</span><br><span class="line">-d 		向后翻半页</span><br><span class="line">-h 		显示帮助界面</span><br><span class="line">-Q 		退出less 命令</span><br><span class="line">-u 		向前滚动半页</span><br><span class="line">-y 		向前滚动一行</span><br><span class="line">空格键 	滚动一页</span><br><span class="line">回车键 	滚动一行</span><br><span class="line">[pagedown]： 向下翻动一页</span><br><span class="line">[pageup]： 向上翻动一页</span><br></pre></td></tr></table></figure>
+
+
+
+<p>&gt;指令 和 &gt;&gt;指令</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">&quot;&gt;&quot;</span> 是输出到文件中, 如果文件存在, 则原来的内容被清空, 不存在则创建文件</span><br><span class="line"><span class="string">&quot;&gt;&gt;&quot;</span>是把输出追加到文件中, 如果文件存在, 追加到末尾, 不存在则创建文件</span><br><span class="line"></span><br><span class="line">例如：</span><br><span class="line"><span class="built_in">ls</span> -l &gt; a.txt			将列表的内容写入a.txt中（覆盖写）</span><br><span class="line"><span class="built_in">ls</span> -l &gt;&gt; a.txt			将列表的内容写入a.txt的末尾</span><br><span class="line"><span class="built_in">cat</span> b.txt &gt; a.txt		将b.txt的内容写入a.txt（覆盖写）</span><br><span class="line"><span class="built_in">cat</span> b.txt &gt;&gt; a.txt		将b.txt的内容写入a.txt的末尾</span><br><span class="line"></span><br><span class="line">总结：就是将原本要在终端展示的内容写入某个文件中</span><br></pre></td></tr></table></figure>
+
+
+
+<p>echo指令</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">echo</span> 输出内容到控制台</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://jjw-beiqi.github.io/2022/03/24/Linux/image-20220316200542740.png" alt="image-20220316200542740"></p>
+<p>head指令</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">head</span> [参数] [文件]		</span><br><span class="line"> 可用于查看文件的开头部分的内容，有一个常用的参数 -n 用于显示行数，默认为 10，即显示 10 行的内容。</span><br><span class="line"></span><br><span class="line">参数：</span><br><span class="line">-q 		隐藏文件名</span><br><span class="line">-v 		显示文件名</span><br><span class="line">-c&lt;数目&gt; 显示的字节数。</span><br><span class="line">-n&lt;行数&gt; 显示的行数。</span><br></pre></td></tr></table></figure>
+
+
+
+<p>tail指令</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">tail</span> [参数] [文件]		可用于查看文件的尾部部分的内容</span><br><span class="line"></span><br><span class="line">有一个常用的参数 -f 常用于查阅正在改变的日志文件。<span class="built_in">tail</span> -f filename 会把 filename 文件里的最尾部的内容显示在屏幕上，并且不断刷新，只要 filename 更新就可以看到最新的文件内容。</span><br><span class="line">注：只能展示追加的东西 即 &gt;&gt; 指令追加的东西</span><br><span class="line"></span><br><span class="line">参数：</span><br><span class="line">-f 		循环读取</span><br><span class="line">-q 		不显示处理信息</span><br><span class="line">-v 		显示详细的处理信息</span><br><span class="line">-c&lt;数目&gt; 显示的字节数</span><br><span class="line">-n&lt;行数&gt; 显示文件的尾部 n 行内容</span><br><span class="line">--pid=PID 与-f合用,表示在进程ID,PID死掉之后结束</span><br><span class="line">-q 		从不输出给出文件名的首部</span><br><span class="line">-s 		与-f合用,表示在每次反复的间隔休眠S秒</span><br></pre></td></tr></table></figure>
+
+
+
+<p>ln指令</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">ln</span> [参数][源文件或目录][目标文件或目录]		</span><br><span class="line">它的功能是为某一个文件在另外一个位置建立一个同步的链接。类似于windows里的快捷方式</span><br><span class="line"></span><br><span class="line">命令参数</span><br><span class="line"></span><br><span class="line">必要参数：</span><br><span class="line">-b 		删除，覆盖以前建立的链接</span><br><span class="line">-d 		允许超级用户制作目录的硬链接</span><br><span class="line">-f 		强制执行</span><br><span class="line">-i 		交互模式，文件存在则提示用户是否覆盖</span><br><span class="line">-n 		把符号链接视为一般目录</span><br><span class="line">-s 		软链接(符号链接)</span><br><span class="line">-v 		显示详细的处理过程</span><br><span class="line"></span><br><span class="line">选择参数：</span><br><span class="line">-S 		<span class="string">&quot;-S&lt;字尾备份字符串&gt; &quot;</span>或 <span class="string">&quot;--suffix=&lt;字尾备份字符串&gt;&quot;</span></span><br><span class="line">-V 		<span class="string">&quot;-V&lt;备份方式&gt;&quot;</span>或<span class="string">&quot;--version-control=&lt;备份方式&gt;&quot;</span></span><br><span class="line">--<span class="built_in">help</span> 		显示帮助信息</span><br><span class="line">--version 	显示版本信息</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://jjw-beiqi.github.io/2022/03/24/Linux/image-20220316203532753.png" alt="image-20220316203532753"></p>
+<p><img src="https://jjw-beiqi.github.io/2022/03/24/Linux/image-20220316203612420.png" alt="image-20220316203612420"></p>
+<p>history指令</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">history</span> 		查看已经执行过的历史命令，也可以执行历史命令</span><br><span class="line"></span><br><span class="line">例如：</span><br><span class="line"><span class="built_in">history</span> 5		查看最近5条命令</span><br><span class="line">！277 			执行历史的第277条指令</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<h3 id="时间日期类指令"><a href="#时间日期类指令" class="headerlink" title="时间日期类指令"></a>时间日期类指令</h3><p>date指令</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">date</span>		显示当前时间</span><br><span class="line"></span><br><span class="line">例如：</span><br><span class="line"><span class="built_in">date</span>+%Y		显示当前年份</span><br><span class="line"><span class="built_in">date</span>+%m		显示当前月份</span><br><span class="line"><span class="built_in">date</span>+%d		显示当前是哪一天</span><br><span class="line"></span><br><span class="line"><span class="built_in">date</span> -s 2022-3-15	设置日期</span><br></pre></td></tr></table></figure>
+
+
+
+<p>cal指令</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cal		显示日历</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<h3 id="搜索查找类指令"><a href="#搜索查找类指令" class="headerlink" title="搜索查找类指令"></a>搜索查找类指令</h3><p>find指令</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">find  +  目录名称  +  参数</span><br><span class="line">用来在指定目录下查找文件。任何位于参数之前的字符串都将被视为欲查找的目录名。如果使用该命令时，不设置任何参数，则 find 命令将在当前目录下查找子目录与文件。并且将查找到的子目录和文件全部进行显示。</span><br><span class="line"></span><br><span class="line">参数说明：</span><br><span class="line">-name		按名称查找（find /home -name hello.txt）</span><br><span class="line">-user		按用户名查找</span><br><span class="line">-size		按文件大小查找（大于+、小于-、等于）（find / -size +20M）</span><br></pre></td></tr></table></figure>
+
+
+
+<p>locate指令</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">locate [-d ][--<span class="built_in">help</span>][--version][范本样式...]</span><br><span class="line"></span><br><span class="line">用于查找符合条件的文档，他会去保存文档和目录名称的数据库内，查找合乎范本样式条件的文档或目录。</span><br><span class="line">locate指令可以快速定位文件路径。locate指令利用事先建立的系统中所有文件名称以及路径的locate数据库实现快速定位给定的文件。locate指令无需遍历整个文件系统，查询速度较快，为了保证查询结果的准确度，管理员必须定期更新locate时刻</span><br><span class="line"></span><br><span class="line">注：由于locate指令基于数据库进行查询，所以第一次运行前，必须使用updatedb指令创建locate数据库</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">参数：</span><br><span class="line">-b 		仅匹配路径名的基本名称</span><br><span class="line">-c 		只输出找到的数量</span><br><span class="line">-d 		使用 DBPATH 指定的数据库，而不是默认数据库 /var/lib/mlocate/mlocate.db</span><br><span class="line">-e 		仅打印当前现有文件的条目</span><br><span class="line">-1 		如果 是 1．则启动安全模式。在安全模式下，使用者不会看到权限无法看到 的档案。这会始速度减慢，因为 locate 必须至实际的档案系统中取得档案的 权限资料。</span><br><span class="line">-0 		在输出上带有NUL的单独条目</span><br><span class="line">-S 		不搜索条目，打印有关每个数据库的统计信息</span><br><span class="line">-q 		安静模式，不会显示任何错误讯息。</span><br><span class="line">-P 		检查文件存在时不要遵循尾随的符号链接</span><br><span class="line">-l 		将输出（或计数）限制为LIMIT个条目</span><br><span class="line">-n 		至多显示 n个输出。</span><br><span class="line">-m 		被忽略，为了向后兼容</span><br><span class="line">-r 		使用基本正则表达式</span><br><span class="line">-s 		被忽略，为了向后兼容</span><br><span class="line">-o 		指定资料库存的名称。</span><br><span class="line">-h 		显示帮助</span><br><span class="line">-i 		忽略大小写</span><br><span class="line">-V 		显示版本信息</span><br></pre></td></tr></table></figure>
+
+
+
+<p>grep指令和管道符号 |</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line">grep		过滤查找</span><br><span class="line">|			表示将前一个命令的处理结果输出传递给后面的命令处理</span><br><span class="line"></span><br><span class="line">例如：</span><br><span class="line"><span class="built_in">cat</span> a.txt | grep <span class="built_in">yes</span>		查找a.txt文件中<span class="built_in">yes</span>的语句</span><br><span class="line"></span><br><span class="line">参数：</span><br><span class="line"></span><br><span class="line">-a 或 --text : 不要忽略二进制的数据。</span><br><span class="line">-A&lt;显示行数&gt; 或 --after-context=&lt;显示行数&gt; : 除了显示符合范本样式的那一列之外，并显示该行之后的内容。</span><br><span class="line">-b 或 --byte-offset : 在显示符合样式的那一行之前，标示出该行第一个字符的编号。</span><br><span class="line">-B&lt;显示行数&gt; 或 --before-context=&lt;显示行数&gt; : 除了显示符合样式的那一行之外，并显示该行之前的内容。</span><br><span class="line">-c 或 --count : 计算符合样式的列数。</span><br><span class="line">-C&lt;显示行数&gt; 或 --context=&lt;显示行数&gt;或-&lt;显示行数&gt; : 除了显示符合样式的那一行之外，并显示该行之前后的内容。</span><br><span class="line">-d &lt;动作&gt; 或 --directories=&lt;动作&gt; : 当指定要查找的是目录而非文件时，必须使用这项参数，否则grep指令将回报信息并停止动作。</span><br><span class="line">-e&lt;范本样式&gt; 或 --regexp=&lt;范本样式&gt; : 指定字符串做为查找文件内容的样式。</span><br><span class="line">-E 或 --extended-regexp : 将样式为延伸的正则表达式来使用。</span><br><span class="line">-f&lt;规则文件&gt; 或 --file=&lt;规则文件&gt; : 指定规则文件，其内容含有一个或多个规则样式，让grep查找符合规则条件的文件内容，格式为每行一个规则样式。</span><br><span class="line">-F 或 --fixed-regexp : 将样式视为固定字符串的列表。</span><br><span class="line">-G 或 --basic-regexp : 将样式视为普通的表示法来使用。</span><br><span class="line">-h 或 --no-filename : 在显示符合样式的那一行之前，不标示该行所属的文件名称。</span><br><span class="line">-H 或 --with-filename : 在显示符合样式的那一行之前，表示该行所属的文件名称。</span><br><span class="line">-i 或 --ignore-case : 忽略字符大小写的差别。</span><br><span class="line">-l 或 --file-with-matches : 列出文件内容符合指定的样式的文件名称。</span><br><span class="line">-L 或 --files-without-match : 列出文件内容不符合指定的样式的文件名称。</span><br><span class="line">-n 或 --line-number : 在显示符合样式的那一行之前，标示出该行的列数编号。</span><br><span class="line">-o 或 --only-matching : 只显示匹配PATTERN 部分。</span><br><span class="line">-q 或 --quiet或--silent : 不显示任何信息。</span><br><span class="line">-r 或 --recursive : 此参数的效果和指定<span class="string">&quot;-d recurse&quot;</span>参数相同。</span><br><span class="line">-s 或 --no-messages : 不显示错误信息。</span><br><span class="line">-v 或 --invert-match : 显示不包含匹配文本的所有行。</span><br><span class="line">-V 或 --version : 显示版本信息。</span><br><span class="line">-w 或 --word-regexp : 只显示全字符合的列。</span><br><span class="line">-x --line-regexp : 只显示全列符合的列。</span><br><span class="line">-y : 此参数的效果和指定<span class="string">&quot;-i&quot;</span>参数相同。</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<h3 id="压缩和解压类指令"><a href="#压缩和解压类指令" class="headerlink" title="压缩和解压类指令"></a>压缩和解压类指令</h3><p>gzip &#x2F; gunzip 指令</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">gzip 文件名/目录名		压缩文件，只能将文件压缩为 *.gz 文件，压缩后不会保留原来的文件</span><br><span class="line">gunzip 文件名		解压缩文件</span><br><span class="line"></span><br><span class="line">例如：</span><br><span class="line">gzip a.txt ==&gt; a.txt.gz</span><br><span class="line">gunzip a.txt.gz ==&gt; a.txt</span><br></pre></td></tr></table></figure>
+
+
+
+<p>zip &#x2F; unzip 指令</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">zip 文件名/目录名		用于压缩文件，压缩后的文件后缀名为 .zip，会保留源文件</span><br><span class="line">unzip 文件名	用于解压缩，会保留源文件</span><br><span class="line"></span><br><span class="line">zip参数：</span><br><span class="line">-A 		调整可执行的自动解压缩文件。</span><br><span class="line">-q 		不显示指令执行过程。</span><br><span class="line">-m 		将文件压缩并加入压缩文件后，删除原始文件，即把文件移到压缩文件中。</span><br><span class="line">-t 		把压缩文件的日期设成指定的日期。</span><br><span class="line">-r 		递归处理，将指定目录下的所有文件和子目录一并处理。</span><br><span class="line">-b		&lt;工作目录&gt; 指定暂时存放文件的目录。</span><br><span class="line"></span><br><span class="line">unzip参数：</span><br><span class="line">-d		需要解压到的目录。</span><br></pre></td></tr></table></figure>
+
+
+
+<p>tar指令</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">tar 文件名</span><br><span class="line">是打包指令，最后打包后的文件是tar.gz的文件</span><br><span class="line"></span><br><span class="line">例如：</span><br><span class="line">tar -zcvf a.tar.gz a1.txt a2.txt	将两个文件压缩到一个文件中</span><br><span class="line">tar -zcvf myhome.tar.gz /home/		将home目录下的文件都压缩起来</span><br><span class="line">tar -zxvf a.tar.gz  				将a.tar.gz解压到当前目录</span><br><span class="line">tar -zxvf a.tar.gz -C /opt/temp		将a.tar.gz解压到/opt/temp（temp目录需要存在）</span><br><span class="line"></span><br><span class="line">参数：</span><br><span class="line">-c		产生.tar打包文件</span><br><span class="line">-v		显示详细信息</span><br><span class="line">-f		指定压缩后的文件名</span><br><span class="line">-z		打包同时压缩</span><br><span class="line">-x		解包.tar文件</span><br><span class="line">-C		解压到目标文件需要携带此参数</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="组管理和权限管理"><a href="#组管理和权限管理" class="headerlink" title="组管理和权限管理"></a>组管理和权限管理</h3><p>再linux中的每个用户必须属于一个组，不能独立于组外</p>
+<p><img src="https://jjw-beiqi.github.io/2022/03/24/Linux/image-20220319112751977.png" alt="image-20220319112751977"></p>
+<p><strong>文件 &#x2F; 目录 所有者</strong></p>
+<p>一般为文件的创造者，谁创建了该文件，谁就是所有者</p>
+<p><strong>查看文件的所有者指令</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">ls</span> -ahl</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://jjw-beiqi.github.io/2022/03/24/Linux/image-20220319114305675.png" alt="image-20220319114305675"></p>
+<p><strong>修改文件的所有者</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">chown</span> -R newowner filename	改变文件的所有者</span><br><span class="line"><span class="built_in">chown</span> newowner:newgroup filename 改变文件的所有者和所有组</span><br><span class="line"></span><br><span class="line">参数：</span><br><span class="line">-R		递归将目录下的所有子文件子目录修改</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://jjw-beiqi.github.io/2022/03/24/Linux/image-20220319114700137.png" alt="image-20220319114700137"></p>
+<p><strong>修改文件所在组</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">chgrp</span> -R 组名 文件名</span><br><span class="line"></span><br><span class="line">参数：</span><br><span class="line">-R		递归将目录下的所有子文件子目录修改</span><br></pre></td></tr></table></figure>
+
+
+
+<p><strong>修改用户所在组</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">usermod -g 组名 用户名</span><br></pre></td></tr></table></figure>
+
+
+
+<p><strong>改变用户初始登录目录</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">usermod -d 目录名 用户名</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<h3 id="权限管理"><a href="#权限管理" class="headerlink" title="权限管理"></a>权限管理</h3><p>权限的基本介绍：</p>
+<p><img src="https://jjw-beiqi.github.io/2022/03/24/Linux/image-20220320095349009.png" alt="image-20220320095349009"></p>
+<ul>
+<li>第一位：代表文件类型（ - 普通文件 | d 目录 | l 软连接 | c 字符设备（鼠标、键盘）| b 块文件）</li>
+<li>第二~四位：表示文件拥有者的权限（r 可读 | w 可写 | x课执行）</li>
+<li>第五~七位：表示与文件拥有者同一组的用户的权限</li>
+<li>第八~十位：表示不与文件拥有者同组的用户的权限</li>
+</ul>
+<p><strong>rwx权限详解</strong></p>
+<p>rwx权限还可用数字表示：r&#x3D;4、w&#x3D;2、x&#x3D;1（rwx&#x3D;4+2+1&#x3D;7）</p>
+<p>rwx作用在文件</p>
+<ul>
+<li>r：代表可读；可以读取，查看</li>
+<li>w：代表可写；可以修改，但不能删除文件，<strong>删除一个文件的前提条件是对该文件所在目录有写权限才能删除</strong></li>
+<li>x：代表可执行；可以被执行</li>
+</ul>
+<p>rwx作用于目录</p>
+<ul>
+<li>r：代表可读：可以读取，ls查看目录内容</li>
+<li>w：代表可写：可以修改，目录内创建、删除、重命名目录</li>
+<li>x：代表可执行；可以进入该目录</li>
+</ul>
+<p><strong>修改权限</strong></p>
+<p>通过<strong>chmod指令</strong>，可以修改文件或目录的权限</p>
+<p>第一种修改方式：+、-、&#x3D; 修改权限</p>
+<p>u：所有者    g：所有组    o：其他人    a：所有人</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">chmod</span> u=rwx,g=rx,o=x a.txt 给a.txt的所有者添加rwx权限，所有组rx权限，其他人x权限</span><br><span class="line"><span class="built_in">chmod</span> o+w a.txt	给其他人加上w权限</span><br><span class="line"><span class="built_in">chmod</span> a-x a.txt	给所有人减去x权限</span><br></pre></td></tr></table></figure>
+
+
+
+<p>第二种修改方式：通过数字变更权限</p>
+<p>r&#x3D;4、w&#x3D;2、x&#x3D;1</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">chmod</span> 751 a.txt	给a.txt的所有者添加rwx权限，所有组rx权限，其他人x权限</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<h3 id="crond-任务调度"><a href="#crond-任务调度" class="headerlink" title="crond 任务调度"></a>crond 任务调度</h3><p>概述：</p>
+<ul>
+<li>任务调度是指系统在某个时间执行的特定的命令或程序</li>
+<li>任务调度分类：<ul>
+<li>系统工作，如病毒扫描</li>
+<li>个别用户工作，如对mysql数据库的备份</li>
+</ul>
+</li>
+</ul>
+<p>crontab进行定时任务的设置:略</p>
+<hr>
+<h2 id="Linux运行级别"><a href="#Linux运行级别" class="headerlink" title="Linux运行级别"></a>Linux运行级别</h2><p><img src="https://jjw-beiqi.github.io/2022/03/24/Linux/image-20220315085359926.png" alt="image-20220315085359926"></p>
+<p><strong>指定运行级别</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">init [012356]</span><br></pre></td></tr></table></figure>
+
+
+
+<p><strong>如何找回root密码</strong></p>
+<p>进入单用户模式，然后修改root密码</p>
+<hr>
+<h2 id="Linux磁盘分区、挂载"><a href="#Linux磁盘分区、挂载" class="headerlink" title="Linux磁盘分区、挂载"></a>Linux磁盘分区、挂载</h2><h3 id="分区基础知识"><a href="#分区基础知识" class="headerlink" title="分区基础知识"></a>分区基础知识</h3><p><strong>分区的方式</strong></p>
+<p>mbr分区：</p>
+<p>1、最多支持四个主分区</p>
+<p>2、系统只能安装在主分区</p>
+<p>3、扩展分区要占一个主分区</p>
+<p>4、MBR最大只支持2TB，但拥有最好的兼容性</p>
+<p>gtp分区：</p>
+<p>1、支持无限多个主分区</p>
+<p>2、最大支持18EB的大容量</p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="mailto:undefined">贝奇野菜汁</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="https://jjw-beiqi.github.io/2022/03/24/Linux/">https://jjw-beiqi.github.io/2022/03/24/Linux/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://jjw-beiqi.github.io" target="_blank">Socket</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/Linux/">Linux</a></div><div class="post_share"><div class="social-share" data-image="/img/cover16.png" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/social-share.js/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/social-share.js/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="next-post pull-full"><a href="/2022/03/23/sql/"><img class="next-cover" src="/img/cover19.png" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">sql语句整理</div></div></a></div></nav><hr/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> 评论</span></div></div><div class="comment-wrap"><div><div class="vcomment" id="vcomment"></div></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="/images/head.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">贝奇野菜汁</div><div class="author-info__description"></div></div><div class="card-info-data is-center"><div class="card-info-data-item"><a href="/archives/"><div class="headline">文章</div><div class="length-num">11</div></a></div><div class="card-info-data-item"><a href="/tags/"><div class="headline">标签</div><div class="length-num">11</div></a></div><div class="card-info-data-item"><a href="/categories/"><div class="headline">分类</div><div class="length-num">6</div></a></div></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/xxxxxx"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="https://github.com/jjw-beiqi" target="_blank" title="Github"><i class="fab fa-github"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">评论系统已开放 ( '▽′)Ψ</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Linux"><span class="toc-number">1.</span> <span class="toc-text">Linux</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Linux%E5%85%A5%E9%97%A8"><span class="toc-number">1.1.</span> <span class="toc-text">Linux入门</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Linux%E7%9B%AE%E5%BD%95%E7%BB%93%E6%9E%84"><span class="toc-number">1.2.</span> <span class="toc-text">Linux目录结构</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%BF%9C%E7%A8%8B%E7%99%BB%E5%BD%95Linux%E7%B3%BB%E7%BB%9F"><span class="toc-number">1.3.</span> <span class="toc-text">远程登录Linux系统</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#XShell%E8%BF%9C%E7%A8%8B%E6%93%8D%E4%BD%9C"><span class="toc-number">1.3.1.</span> <span class="toc-text">XShell远程操作</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#XFtp%E8%BF%9C%E7%A8%8B%E4%BC%A0%E8%BE%93%E6%96%87%E4%BB%B6"><span class="toc-number">1.3.2.</span> <span class="toc-text">XFtp远程传输文件</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#vim%E7%BC%96%E8%BE%91%E5%99%A8"><span class="toc-number">1.4.</span> <span class="toc-text">vim编辑器</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#vim%E4%B8%89%E7%A7%8D%E6%A8%A1%E5%BC%8F"><span class="toc-number">1.4.1.</span> <span class="toc-text">vim三种模式</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#vim%E5%BF%AB%E6%8D%B7%E9%94%AE"><span class="toc-number">1.4.2.</span> <span class="toc-text">vim快捷键</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Linux%E5%91%BD%E4%BB%A4"><span class="toc-number">1.5.</span> <span class="toc-text">Linux命令</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%85%B3%E6%9C%BA-amp-%E9%87%8D%E5%90%AF%E5%91%BD%E4%BB%A4"><span class="toc-number">1.5.1.</span> <span class="toc-text">关机&amp;重启命令</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%94%A8%E6%88%B7%E7%99%BB%E5%BD%95%E5%92%8C%E6%B3%A8%E9%94%80"><span class="toc-number">1.5.2.</span> <span class="toc-text">用户登录和注销</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%94%A8%E6%88%B7%E7%AE%A1%E7%90%86"><span class="toc-number">1.5.3.</span> <span class="toc-text">用户管理</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%94%A8%E6%88%B7%E7%BB%84%E7%AE%A1%E7%90%86"><span class="toc-number">1.5.4.</span> <span class="toc-text">用户组管理</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%B8%AE%E5%8A%A9%E6%8C%87%E4%BB%A4"><span class="toc-number">1.5.5.</span> <span class="toc-text">帮助指令</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%96%87%E4%BB%B6%E7%9B%AE%E5%BD%95%E7%B1%BB%E6%8C%87%E4%BB%A4"><span class="toc-number">1.5.6.</span> <span class="toc-text">文件目录类指令</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%97%B6%E9%97%B4%E6%97%A5%E6%9C%9F%E7%B1%BB%E6%8C%87%E4%BB%A4"><span class="toc-number">1.5.7.</span> <span class="toc-text">时间日期类指令</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%90%9C%E7%B4%A2%E6%9F%A5%E6%89%BE%E7%B1%BB%E6%8C%87%E4%BB%A4"><span class="toc-number">1.5.8.</span> <span class="toc-text">搜索查找类指令</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8E%8B%E7%BC%A9%E5%92%8C%E8%A7%A3%E5%8E%8B%E7%B1%BB%E6%8C%87%E4%BB%A4"><span class="toc-number">1.5.9.</span> <span class="toc-text">压缩和解压类指令</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%BB%84%E7%AE%A1%E7%90%86%E5%92%8C%E6%9D%83%E9%99%90%E7%AE%A1%E7%90%86"><span class="toc-number">1.5.10.</span> <span class="toc-text">组管理和权限管理</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9D%83%E9%99%90%E7%AE%A1%E7%90%86"><span class="toc-number">1.5.11.</span> <span class="toc-text">权限管理</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#crond-%E4%BB%BB%E5%8A%A1%E8%B0%83%E5%BA%A6"><span class="toc-number">1.5.12.</span> <span class="toc-text">crond 任务调度</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Linux%E8%BF%90%E8%A1%8C%E7%BA%A7%E5%88%AB"><span class="toc-number">1.6.</span> <span class="toc-text">Linux运行级别</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Linux%E7%A3%81%E7%9B%98%E5%88%86%E5%8C%BA%E3%80%81%E6%8C%82%E8%BD%BD"><span class="toc-number">1.7.</span> <span class="toc-text">Linux磁盘分区、挂载</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%88%86%E5%8C%BA%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86"><span class="toc-number">1.7.1.</span> <span class="toc-text">分区基础知识</span></a></li></ol></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2022/03/24/Linux/" title="Linux"><img src="/img/cover16.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Linux"/></a><div class="content"><a class="title" href="/2022/03/24/Linux/" title="Linux">Linux</a><time datetime="2022-03-24T07:56:05.000Z" title="发表于 2022-03-24 15:56:05">2022-03-24</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2022/03/23/sql/" title="sql语句整理"><img src="/img/cover19.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="sql语句整理"/></a><div class="content"><a class="title" href="/2022/03/23/sql/" title="sql语句整理">sql语句整理</a><time datetime="2022-03-23T10:27:50.000Z" title="发表于 2022-03-23 18:27:50">2022-03-23</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2022/03/23/JMM/" title="Java内存模型"><img src="/img/cover15.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Java内存模型"/></a><div class="content"><a class="title" href="/2022/03/23/JMM/" title="Java内存模型">Java内存模型</a><time datetime="2022-03-23T02:16:05.000Z" title="发表于 2022-03-23 10:16:05">2022-03-23</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2022/03/22/Redis/" title="Redis"><img src="/img/cover15.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Redis"/></a><div class="content"><a class="title" href="/2022/03/22/Redis/" title="Redis">Redis</a><time datetime="2022-03-22T12:24:11.000Z" title="发表于 2022-03-22 20:24:11">2022-03-22</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2022/03/22/MyBatis/" title="MyBatis学习笔记"><img src="/img/cover15.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="MyBatis学习笔记"/></a><div class="content"><a class="title" href="/2022/03/22/MyBatis/" title="MyBatis学习笔记">MyBatis学习笔记</a><time datetime="2022-03-22T03:09:11.000Z" title="发表于 2022-03-22 11:09:11">2022-03-22</time></div></div></div></div></div></div></main><footer id="footer" style="background-image: url('/img/cover16.png')"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2022 By 贝奇野菜汁</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><a id="to_comment" href="#post-comment" title="直达评论"><i class="fas fa-comments"></i></a><button id="go-up" type="button" title="回到顶部"><i class="fas fa-arrow-up"></i></button></div></div><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">本地搜索</span><span id="loading-status"></span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="is-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据库加载中</span></div><div class="search-wrap"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章" type="text"/></div></div><hr/><div id="local-search-results"></div></div></div><div id="search-mask"></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.umd.js"></script><script src="/js/search/local-search.js"></script><div class="js-pjax"><script>function loadValine () {
+  function initValine () {
+    const valine = new Valine(Object.assign({
+      el: '#vcomment',
+      appId: 'rOsN3OEnrRLe07w7YSm6vsF0-gzGzoHsz',
+      appKey: 'FnGMcugtJLWckH5PYXIHNB0D',
+      avatar: 'monsterid',
+      serverURLs: '',
+      emojiMaps: "",
+      path: window.location.pathname,
+      visitor: false
+    }, null))
+  }
+
+  if (typeof Valine === 'function') initValine() 
+  else getScript('https://cdn.jsdelivr.net/npm/valine/dist/Valine.min.js').then(initValine)
+}
+
+if ('Valine' === 'Valine' || !true) {
+  if (true) btf.loadComment(document.getElementById('vcomment'),loadValine)
+  else setTimeout(loadValine, 0)
+} else {
+  function loadOtherComment () {
+    loadValine()
+  }
+}</script></div><script defer="defer" id="fluttering_ribbon" mobile="true" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/dist/canvas-fluttering-ribbon.min.js"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
