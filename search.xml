@@ -1,6 +1,123 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>ConcurrentHashMap</title>
+    <url>/2022/03/24/ConcurrentHashMap/</url>
+    <content><![CDATA[]]></content>
+      <categories>
+        <category>Java集合</category>
+      </categories>
+      <tags>
+        <tag>ConcurrentHashMap</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Java内存模型</title>
+    <url>/2022/03/23/JMM/</url>
+    <content><![CDATA[<h1 id="Java内存模型"><a href="#Java内存模型" class="headerlink" title="Java内存模型"></a>Java内存模型</h1><p>Java线程内存模型跟cpu缓存模型类似，是基于cpu缓存模型来建立的，Java线程内存模型是标准化的，屏蔽掉了底层不同计算机的区别</p>
+<p><img src="https://jjw-beiqi.github.io/2022/03/23/JMM/image-20220323101927305.png" alt="image-20220323101927305"></p>
+<h2 id="Java原子操作详解"><a href="#Java原子操作详解" class="headerlink" title="Java原子操作详解"></a>Java原子操作详解</h2><ul>
+<li>read(读取):从主内存读取数据</li>
+<li>load（载入):将主内存读取到的数据写入工作内存</li>
+<li>use(使用):从工作内存读取数据来计算</li>
+<li>assign(赋值):将计算好的值重新赋值到工作内存中</li>
+<li>store(存储):将工作内存数据写入主内存</li>
+<li>write(写入):将store过去的变量值赋值给主内存中的变量</li>
+<li>lock(锁定):将主内存变量加锁,标识为线程独占状态</li>
+<li>unlock(解锁):将主内存变量解锁,解锁后其他线程可以锁定该变量</li>
+</ul>
+<p>情景：</p>
+<p>线程一：拿到initFlag后，执行 <strong>while(!initFlag)</strong> 语句</p>
+<p>线程二：拿到initFlag后，对其进行取反</p>
+<p><img src="https://jjw-beiqi.github.io/2022/03/23/JMM/image-20220323102645963.png" alt="image-20220323102645963"></p>
+<p>结果：线程一死循环，线程二修改了共享变量的值</p>
+<hr>
+<h2 id="volatile"><a href="#volatile" class="headerlink" title="volatile"></a>volatile</h2><p>解决上面的问题可以通过对共享变量加volatile关键字解决</p>
+<h3 id="volatile概述"><a href="#volatile概述" class="headerlink" title="volatile概述"></a>volatile概述</h3><p>一个线程对volatile关键字修饰的共享变量副本进行修改后，会立马将修改后的值写入主内存中，其他的线程通过<strong>cpu总线嗅探机制</strong>监听到这个共享变量的值被修改过后，就会将自己线程工作内存中的共享变量副本失效掉，之后再使用的话就去主内存中取最新的值</p>
+<p><img src="https://jjw-beiqi.github.io/2022/03/23/JMM/image-20220323111142388.png" alt="image-20220323111142388"></p>
+<hr>
+<h3 id="volatile原理"><a href="#volatile原理" class="headerlink" title="volatile原理"></a>volatile原理</h3><p>底层实现主要是通过汇编lock前缀指令，它会锁定这块内存区域的缓存，并回写到主内存</p>
+<p><img src="https://jjw-beiqi.github.io/2022/03/23/JMM/image-20220323110053121.png" alt="image-20220323110053121"></p>
+<p>Lock在具体的执行上，<strong>它先对总线和缓存加锁</strong>，然后<strong>执行后面的指令</strong>，在<strong>Lock锁住总线</strong>的时候，其他CPU的读写请求都会<strong>被阻塞</strong>，<strong>直到锁释放</strong>。最后<strong>释放锁后</strong>会把高速缓存中的脏数据全部<strong>刷新回主内存</strong>，且这个<strong>写回内存的操作</strong>会使在其他CPU里<strong>缓存了该地址的数据无效</strong>。</p>
+<blockquote>
+<h4 id="缓存行"><a href="#缓存行" class="headerlink" title="缓存行"></a>缓存行</h4><p>缓存是分段（line）的，一个段对应一块存储空间，我们称之为缓存行，它是CPU缓存中可分配的最小存储单元，大小32字节、64字节、128字节不等，这与CPU架构有关，通常来说是64字节。当CPU看到一条读取内存的指令时，它会把内存地址传递给一级数据缓存，一级数据缓存会检查它是否有这个内存地址对应的缓存段，如果没有就把整个缓存段从内存（或更高一级的缓存）中加载进来。</p>
+</blockquote>
+<blockquote>
+<p>一个问题：如果存在两个线程都修改了共享变量，都要向主内存中写入的情况如何?</p>
+</blockquote>
+<hr>
+<h3 id="volatile不能保证原子性"><a href="#volatile不能保证原子性" class="headerlink" title="volatile不能保证原子性"></a>volatile不能保证原子性</h3><p>情景：    </p>
+<p>new出若干个线程，对volatile修饰的共享变量执行自增操作，结果并不能得到期望的值</p>
+<p><img src="https://jjw-beiqi.github.io/2022/03/23/JMM/image-20220323112531259.png" alt="image-20220323112531259"></p>
+<p>原因：自增操作不是原子性的（先<strong>读取</strong>，再<strong>修改</strong>，最后<strong>写回工作内存</strong>）</p>
+<p>A、B两个线程同时自增i。由于volatile可见性，因此步骤1两条线程一定拿到的是最新的i，也就是相同的i，但是从第2步开始就有问题了，有可能出现的场景是线程A自增了i并回写，但是线程B此时已经拿到了i，不会再去拿线程A回写的i，因此对原值进行了一次自增并回写，这就导致了线程非安全，也就是多线程技术器结果不对</p>
+<p>如果线程A对i进行自增了以后cpu缓存不是应该通知其他缓存，并且重新load i么？</p>
+<p>拿的前提是读，问题是，线程A对i进行了自增，线程B已经拿到了i并不存在需要再次读取i的场景，当然是不会重新load i这个值的。</p>
+<p>ps：也就是线程B的缓存行内容的确会失效。但是此时线<strong>程B中i的值已经运行在加法指令中，不存在需要再次从缓存行读取i的场景。</strong></p>
+<hr>
+<h3 id="内存屏障"><a href="#内存屏障" class="headerlink" title="内存屏障"></a>内存屏障</h3><p>查看如下代码，猜测a、b的值</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Test</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="type">int</span> <span class="variable">x</span> <span class="operator">=</span> <span class="number">0</span>, y = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;</span><br><span class="line">        x = <span class="number">0</span>; y = <span class="number">0</span>;</span><br><span class="line">        <span class="type">Thread</span> <span class="variable">thread</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Thread</span>(<span class="keyword">new</span> <span class="title class_">Runnable</span>() &#123;</span><br><span class="line">            <span class="meta">@Override</span></span><br><span class="line">            <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">run</span><span class="params">()</span> &#123;</span><br><span class="line">                <span class="type">int</span> <span class="variable">a</span> <span class="operator">=</span> y;</span><br><span class="line">                x = <span class="number">1</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;);</span><br><span class="line">        thread.start();</span><br><span class="line"></span><br><span class="line">        <span class="type">Thread</span> <span class="variable">thread1</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Thread</span>(<span class="keyword">new</span> <span class="title class_">Runnable</span>() &#123;</span><br><span class="line">            <span class="meta">@Override</span></span><br><span class="line">            <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">run</span><span class="params">()</span> &#123;</span><br><span class="line">                <span class="type">int</span> <span class="variable">b</span> <span class="operator">=</span> x;</span><br><span class="line">                y = <span class="number">1</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;);</span><br><span class="line">        thread1.start();</span><br><span class="line">        </span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>你可能会觉得有三种结果</p>
+<ul>
+<li>a&#x3D;1，b&#x3D;0</li>
+<li>a&#x3D;0，b&#x3D;1</li>
+<li>a&#x3D;0，b&#x3D;0</li>
+</ul>
+<p>但其实还有一种结果：a&#x3D;1，b&#x3D;1；这是为什么呢？</p>
+<p>这是因为cpu为了优化代码的执行速度可能会进行指令重排的操作，例如：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">a = <span class="number">1</span>;</span><br><span class="line">b = <span class="number">2</span>;</span><br></pre></td></tr></table></figure>
+
+<p>这两条代码并没有产生依赖，他们的顺序并不影响代码执行，则可能重排成如下</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">b = <span class="number">2</span>;</span><br><span class="line">a = <span class="number">1</span>;</span><br></pre></td></tr></table></figure>
+
+<p>这就是指令重排</p>
+<p>而上述代码也可能存在指令重排，重排成如下代码</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">//线程一</span></span><br><span class="line">x = <span class="number">1</span>;</span><br><span class="line"><span class="type">int</span> <span class="variable">a</span> <span class="operator">=</span> y;</span><br><span class="line"></span><br><span class="line"><span class="comment">//线程二</span></span><br><span class="line">y = <span class="number">1</span>;</span><br><span class="line"><span class="type">int</span> <span class="variable">b</span> <span class="operator">=</span> x;</span><br></pre></td></tr></table></figure>
+
+<p>这是导致 a&#x3D;1，b&#x3D;1 的原因</p>
+<blockquote>
+<p><strong>什么样的指令可以重排序？</strong></p>
+<p>对cpu来说，基本上任何指令都可以实现重排序，因为这样可以提高性能，除了一些lock或禁止重排序的指令外。</p>
+<p>对jvm来说，jvm规范中提到了happens-before原则，也就是不在下面8条原则中的指令都可以重排序：</p>
+<ul>
+<li>程序次序原则：在一个线程内，代码按照编写时的次序执行（jvm会对指令重排序，但是会保证最终一致性）。</li>
+<li>锁定原则：如果一个锁是锁定状态，要先unlock后才能lock。</li>
+<li>volatile变量规则：对变量的写操作要先于对变量的读操作。</li>
+<li>传递规则：A先于B，B先于C，那么A先于C。</li>
+<li>线程启动规则：线程的start()方法先于run()方法运行。</li>
+<li>线程中断规则：线程收到了中断信号，那么之前一定有interrupt()。</li>
+<li>线程终结规则：线程的任务执行单元要发生在线程死亡之前。</li>
+<li>对象的终结规则：线程的初始化先于finalize()方法之前。</li>
+</ul>
+</blockquote>
+<p><strong>解决：增加volatile关键字</strong></p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">volatile</span> <span class="type">int</span> <span class="variable">x</span> <span class="operator">=</span> <span class="number">0</span>, y = <span class="number">0</span>;</span><br></pre></td></tr></table></figure>
+
+<p>被volatile修饰的变量在编译成字节码文件时会多个lock指令，该指令在执行过程中会生成相应的<strong>内存屏障</strong>，以此来解决可见性跟重排序的问题。</p>
+<p>内存屏障的作用：</p>
+<ul>
+<li>在有内存屏障的地方，会禁止指令重排序，即屏障下面的代码不能跟屏障上面的代码交换执行顺序。</li>
+<li>在有内存屏障的地方，线程修改完共享变量以后会马上把该变量从本地内存写回到主内存，<strong>并且让其他线程本地内存中该变量副本失效（使用MESI协议）</strong></li>
+</ul>
+<blockquote>
+<p><strong>内存屏障</strong>是CPU指令。如果你的字段是volatile，Java内存模型将在写操作后插入一个写屏障指令，在读操作前插入一个读屏障指令。</p>
+<p>下面是基于保守策略的JMM内存屏障插入策略：</p>
+<p>在每个volatile写操作的前面插入一个StoreStore屏障。</p>
+<p>在每个volatile写操作的后面插入一个StoreLoad屏障。</p>
+<p>在每个volatile读操作的前面插入一个LoadLoad屏障。</p>
+<p>在每个volatile读操作的后面插入一个LoadStore屏障。</p>
+</blockquote>
+<p><img src="https://jjw-beiqi.github.io/2022/03/23/JMM/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2d0YWFhYQ==,size_16,color_FFFFFF,t_70.png" alt="在这里插入图片描述"></p>
+]]></content>
+      <categories>
+        <category>HideBlog</category>
+      </categories>
+      <tags>
+        <tag>JMM</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>GCRoots</title>
     <url>/2022/03/26/GCRoots/</url>
     <content><![CDATA[<h2 id="面试题引子"><a href="#面试题引子" class="headerlink" title="面试题引子"></a>面试题引子</h2><p>一面：GC Roots如何确定？哪些对象可以作为GC Roots？</p>
@@ -23,17 +140,6 @@
 ]]></content>
       <tags>
         <tag>GCRoots</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>ConcurrentHashMap</title>
-    <url>/2022/03/24/ConcurrentHashMap/</url>
-    <content><![CDATA[]]></content>
-      <categories>
-        <category>Java集合</category>
-      </categories>
-      <tags>
-        <tag>ConcurrentHashMap</tag>
       </tags>
   </entry>
   <entry>
@@ -567,112 +673,6 @@
       </categories>
       <tags>
         <tag>Hibernate</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Java内存模型</title>
-    <url>/2022/03/23/JMM/</url>
-    <content><![CDATA[<h1 id="Java内存模型"><a href="#Java内存模型" class="headerlink" title="Java内存模型"></a>Java内存模型</h1><p>Java线程内存模型跟cpu缓存模型类似，是基于cpu缓存模型来建立的，Java线程内存模型是标准化的，屏蔽掉了底层不同计算机的区别</p>
-<p><img src="https://jjw-beiqi.github.io/2022/03/23/JMM/image-20220323101927305.png" alt="image-20220323101927305"></p>
-<h2 id="Java原子操作详解"><a href="#Java原子操作详解" class="headerlink" title="Java原子操作详解"></a>Java原子操作详解</h2><ul>
-<li>read(读取):从主内存读取数据</li>
-<li>load（载入):将主内存读取到的数据写入工作内存</li>
-<li>use(使用):从工作内存读取数据来计算</li>
-<li>assign(赋值):将计算好的值重新赋值到工作内存中</li>
-<li>store(存储):将工作内存数据写入主内存</li>
-<li>write(写入):将store过去的变量值赋值给主内存中的变量</li>
-<li>lock(锁定):将主内存变量加锁,标识为线程独占状态</li>
-<li>unlock(解锁):将主内存变量解锁,解锁后其他线程可以锁定该变量</li>
-</ul>
-<p>情景：</p>
-<p>线程一：拿到initFlag后，执行 <strong>while(!initFlag)</strong> 语句</p>
-<p>线程二：拿到initFlag后，对其进行取反</p>
-<p><img src="https://jjw-beiqi.github.io/2022/03/23/JMM/image-20220323102645963.png" alt="image-20220323102645963"></p>
-<p>结果：线程一死循环，线程二修改了共享变量的值</p>
-<hr>
-<h2 id="volatile"><a href="#volatile" class="headerlink" title="volatile"></a>volatile</h2><p>解决上面的问题可以通过对共享变量加volatile关键字解决</p>
-<h3 id="volatile概述"><a href="#volatile概述" class="headerlink" title="volatile概述"></a>volatile概述</h3><p>一个线程对volatile关键字修饰的共享变量副本进行修改后，会立马将修改后的值写入主内存中，其他的线程通过<strong>cpu总线嗅探机制</strong>监听到这个共享变量的值被修改过后，就会将自己线程工作内存中的共享变量副本失效掉，之后再使用的话就去主内存中取最新的值</p>
-<p><img src="https://jjw-beiqi.github.io/2022/03/23/JMM/image-20220323111142388.png" alt="image-20220323111142388"></p>
-<hr>
-<h3 id="volatile原理"><a href="#volatile原理" class="headerlink" title="volatile原理"></a>volatile原理</h3><p>底层实现主要是通过汇编lock前缀指令，它会锁定这块内存区域的缓存，并回写到主内存</p>
-<p><img src="https://jjw-beiqi.github.io/2022/03/23/JMM/image-20220323110053121.png" alt="image-20220323110053121"></p>
-<p>Lock在具体的执行上，<strong>它先对总线和缓存加锁</strong>，然后<strong>执行后面的指令</strong>，在<strong>Lock锁住总线</strong>的时候，其他CPU的读写请求都会<strong>被阻塞</strong>，<strong>直到锁释放</strong>。最后<strong>释放锁后</strong>会把高速缓存中的脏数据全部<strong>刷新回主内存</strong>，且这个<strong>写回内存的操作</strong>会使在其他CPU里<strong>缓存了该地址的数据无效</strong>。</p>
-<blockquote>
-<h4 id="缓存行"><a href="#缓存行" class="headerlink" title="缓存行"></a>缓存行</h4><p>缓存是分段（line）的，一个段对应一块存储空间，我们称之为缓存行，它是CPU缓存中可分配的最小存储单元，大小32字节、64字节、128字节不等，这与CPU架构有关，通常来说是64字节。当CPU看到一条读取内存的指令时，它会把内存地址传递给一级数据缓存，一级数据缓存会检查它是否有这个内存地址对应的缓存段，如果没有就把整个缓存段从内存（或更高一级的缓存）中加载进来。</p>
-</blockquote>
-<blockquote>
-<p>一个问题：如果存在两个线程都修改了共享变量，都要向主内存中写入的情况如何?</p>
-</blockquote>
-<hr>
-<h3 id="volatile不能保证原子性"><a href="#volatile不能保证原子性" class="headerlink" title="volatile不能保证原子性"></a>volatile不能保证原子性</h3><p>情景：    </p>
-<p>new出若干个线程，对volatile修饰的共享变量执行自增操作，结果并不能得到期望的值</p>
-<p><img src="https://jjw-beiqi.github.io/2022/03/23/JMM/image-20220323112531259.png" alt="image-20220323112531259"></p>
-<p>原因：自增操作不是原子性的（先<strong>读取</strong>，再<strong>修改</strong>，最后<strong>写回工作内存</strong>）</p>
-<p>A、B两个线程同时自增i。由于volatile可见性，因此步骤1两条线程一定拿到的是最新的i，也就是相同的i，但是从第2步开始就有问题了，有可能出现的场景是线程A自增了i并回写，但是线程B此时已经拿到了i，不会再去拿线程A回写的i，因此对原值进行了一次自增并回写，这就导致了线程非安全，也就是多线程技术器结果不对</p>
-<p>如果线程A对i进行自增了以后cpu缓存不是应该通知其他缓存，并且重新load i么？</p>
-<p>拿的前提是读，问题是，线程A对i进行了自增，线程B已经拿到了i并不存在需要再次读取i的场景，当然是不会重新load i这个值的。</p>
-<p>ps：也就是线程B的缓存行内容的确会失效。但是此时线<strong>程B中i的值已经运行在加法指令中，不存在需要再次从缓存行读取i的场景。</strong></p>
-<hr>
-<h3 id="内存屏障"><a href="#内存屏障" class="headerlink" title="内存屏障"></a>内存屏障</h3><p>查看如下代码，猜测a、b的值</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Test</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="type">int</span> <span class="variable">x</span> <span class="operator">=</span> <span class="number">0</span>, y = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;</span><br><span class="line">        x = <span class="number">0</span>; y = <span class="number">0</span>;</span><br><span class="line">        <span class="type">Thread</span> <span class="variable">thread</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Thread</span>(<span class="keyword">new</span> <span class="title class_">Runnable</span>() &#123;</span><br><span class="line">            <span class="meta">@Override</span></span><br><span class="line">            <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">run</span><span class="params">()</span> &#123;</span><br><span class="line">                <span class="type">int</span> <span class="variable">a</span> <span class="operator">=</span> y;</span><br><span class="line">                x = <span class="number">1</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;);</span><br><span class="line">        thread.start();</span><br><span class="line"></span><br><span class="line">        <span class="type">Thread</span> <span class="variable">thread1</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Thread</span>(<span class="keyword">new</span> <span class="title class_">Runnable</span>() &#123;</span><br><span class="line">            <span class="meta">@Override</span></span><br><span class="line">            <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">run</span><span class="params">()</span> &#123;</span><br><span class="line">                <span class="type">int</span> <span class="variable">b</span> <span class="operator">=</span> x;</span><br><span class="line">                y = <span class="number">1</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;);</span><br><span class="line">        thread1.start();</span><br><span class="line">        </span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>你可能会觉得有三种结果</p>
-<ul>
-<li>a&#x3D;1，b&#x3D;0</li>
-<li>a&#x3D;0，b&#x3D;1</li>
-<li>a&#x3D;0，b&#x3D;0</li>
-</ul>
-<p>但其实还有一种结果：a&#x3D;1，b&#x3D;1；这是为什么呢？</p>
-<p>这是因为cpu为了优化代码的执行速度可能会进行指令重排的操作，例如：</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">a = <span class="number">1</span>;</span><br><span class="line">b = <span class="number">2</span>;</span><br></pre></td></tr></table></figure>
-
-<p>这两条代码并没有产生依赖，他们的顺序并不影响代码执行，则可能重排成如下</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">b = <span class="number">2</span>;</span><br><span class="line">a = <span class="number">1</span>;</span><br></pre></td></tr></table></figure>
-
-<p>这就是指令重排</p>
-<p>而上述代码也可能存在指令重排，重排成如下代码</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">//线程一</span></span><br><span class="line">x = <span class="number">1</span>;</span><br><span class="line"><span class="type">int</span> <span class="variable">a</span> <span class="operator">=</span> y;</span><br><span class="line"></span><br><span class="line"><span class="comment">//线程二</span></span><br><span class="line">y = <span class="number">1</span>;</span><br><span class="line"><span class="type">int</span> <span class="variable">b</span> <span class="operator">=</span> x;</span><br></pre></td></tr></table></figure>
-
-<p>这是导致 a&#x3D;1，b&#x3D;1 的原因</p>
-<blockquote>
-<p><strong>什么样的指令可以重排序？</strong></p>
-<p>对cpu来说，基本上任何指令都可以实现重排序，因为这样可以提高性能，除了一些lock或禁止重排序的指令外。</p>
-<p>对jvm来说，jvm规范中提到了happens-before原则，也就是不在下面8条原则中的指令都可以重排序：</p>
-<ul>
-<li>程序次序原则：在一个线程内，代码按照编写时的次序执行（jvm会对指令重排序，但是会保证最终一致性）。</li>
-<li>锁定原则：如果一个锁是锁定状态，要先unlock后才能lock。</li>
-<li>volatile变量规则：对变量的写操作要先于对变量的读操作。</li>
-<li>传递规则：A先于B，B先于C，那么A先于C。</li>
-<li>线程启动规则：线程的start()方法先于run()方法运行。</li>
-<li>线程中断规则：线程收到了中断信号，那么之前一定有interrupt()。</li>
-<li>线程终结规则：线程的任务执行单元要发生在线程死亡之前。</li>
-<li>对象的终结规则：线程的初始化先于finalize()方法之前。</li>
-</ul>
-</blockquote>
-<p><strong>解决：增加volatile关键字</strong></p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">volatile</span> <span class="type">int</span> <span class="variable">x</span> <span class="operator">=</span> <span class="number">0</span>, y = <span class="number">0</span>;</span><br></pre></td></tr></table></figure>
-
-<p>被volatile修饰的变量在编译成字节码文件时会多个lock指令，该指令在执行过程中会生成相应的<strong>内存屏障</strong>，以此来解决可见性跟重排序的问题。</p>
-<p>内存屏障的作用：</p>
-<ul>
-<li>在有内存屏障的地方，会禁止指令重排序，即屏障下面的代码不能跟屏障上面的代码交换执行顺序。</li>
-<li>在有内存屏障的地方，线程修改完共享变量以后会马上把该变量从本地内存写回到主内存，<strong>并且让其他线程本地内存中该变量副本失效（使用MESI协议）</strong></li>
-</ul>
-<blockquote>
-<p><strong>内存屏障</strong>是CPU指令。如果你的字段是volatile，Java内存模型将在写操作后插入一个写屏障指令，在读操作前插入一个读屏障指令。</p>
-<p>下面是基于保守策略的JMM内存屏障插入策略：</p>
-<p>在每个volatile写操作的前面插入一个StoreStore屏障。</p>
-<p>在每个volatile写操作的后面插入一个StoreLoad屏障。</p>
-<p>在每个volatile读操作的前面插入一个LoadLoad屏障。</p>
-<p>在每个volatile读操作的后面插入一个LoadStore屏障。</p>
-</blockquote>
-<p><img src="https://jjw-beiqi.github.io/2022/03/23/JMM/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2d0YWFhYQ==,size_16,color_FFFFFF,t_70.png" alt="在这里插入图片描述"></p>
-]]></content>
-      <categories>
-        <category>HideBlog</category>
-      </categories>
-      <tags>
-        <tag>JMM</tag>
       </tags>
   </entry>
   <entry>
